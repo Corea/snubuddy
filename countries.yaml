@@ -1,0 +1,996 @@
+- model: base.country
+  pk: 1
+  fields:
+    name: Afghanistan
+- model: base.country
+  pk: 2
+  fields:
+    name: Åland Islands
+- model: base.country
+  pk: 3
+  fields:
+    name: Albania
+- model: base.country
+  pk: 4
+  fields:
+    name: Algeria
+- model: base.country
+  pk: 5
+  fields:
+    name: American Samoa
+- model: base.country
+  pk: 6
+  fields:
+    name: Andorra
+- model: base.country
+  pk: 7
+  fields:
+    name: Angola
+- model: base.country
+  pk: 8
+  fields:
+    name: Anguilla
+- model: base.country
+  pk: 9
+  fields:
+    name: Antarctica
+- model: base.country
+  pk: 10
+  fields:
+    name: Antigua and Barbuda
+- model: base.country
+  pk: 11
+  fields:
+    name: Argentina
+- model: base.country
+  pk: 12
+  fields:
+    name: Armenia
+- model: base.country
+  pk: 13
+  fields:
+    name: Aruba
+- model: base.country
+  pk: 14
+  fields:
+    name: Australia
+- model: base.country
+  pk: 15
+  fields:
+    name: Austria
+- model: base.country
+  pk: 16
+  fields:
+    name: Azerbaijan
+- model: base.country
+  pk: 17
+  fields:
+    name: Bahamas
+- model: base.country
+  pk: 18
+  fields:
+    name: Bahrain
+- model: base.country
+  pk: 19
+  fields:
+    name: Bangladesh
+- model: base.country
+  pk: 20
+  fields:
+    name: Barbados
+- model: base.country
+  pk: 21
+  fields:
+    name: Belarus
+- model: base.country
+  pk: 22
+  fields:
+    name: Belgium
+- model: base.country
+  pk: 23
+  fields:
+    name: Belize
+- model: base.country
+  pk: 24
+  fields:
+    name: Benin
+- model: base.country
+  pk: 25
+  fields:
+    name: Bermuda
+- model: base.country
+  pk: 26
+  fields:
+    name: Bhutan
+- model: base.country
+  pk: 27
+  fields:
+    name: Bolivia, Plurinational State of
+- model: base.country
+  pk: 28
+  fields:
+    name: Bonaire, Sint Eustatius and Saba
+- model: base.country
+  pk: 29
+  fields:
+    name: Bosnia and Herzegovina
+- model: base.country
+  pk: 30
+  fields:
+    name: Botswana
+- model: base.country
+  pk: 31
+  fields:
+    name: Bouvet Island
+- model: base.country
+  pk: 32
+  fields:
+    name: Brazil
+- model: base.country
+  pk: 33
+  fields:
+    name: British Indian Ocean Territory
+- model: base.country
+  pk: 34
+  fields:
+    name: Brunei Darussalam
+- model: base.country
+  pk: 35
+  fields:
+    name: Bulgaria
+- model: base.country
+  pk: 36
+  fields:
+    name: Burkina Faso
+- model: base.country
+  pk: 37
+  fields:
+    name: Burundi
+- model: base.country
+  pk: 38
+  fields:
+    name: Cambodia
+- model: base.country
+  pk: 39
+  fields:
+    name: Cameroon
+- model: base.country
+  pk: 40
+  fields:
+    name: Canada
+- model: base.country
+  pk: 41
+  fields:
+    name: Cape Verde
+- model: base.country
+  pk: 42
+  fields:
+    name: Cayman Islands
+- model: base.country
+  pk: 43
+  fields:
+    name: Central African Republic
+- model: base.country
+  pk: 44
+  fields:
+    name: Chad
+- model: base.country
+  pk: 45
+  fields:
+    name: Chile
+- model: base.country
+  pk: 46
+  fields:
+    name: China
+- model: base.country
+  pk: 47
+  fields:
+    name: Christmas Island
+- model: base.country
+  pk: 48
+  fields:
+    name: Cocos (Keeling) Islands
+- model: base.country
+  pk: 49
+  fields:
+    name: Colombia
+- model: base.country
+  pk: 50
+  fields:
+    name: Comoros
+- model: base.country
+  pk: 51
+  fields:
+    name: Congo
+- model: base.country
+  pk: 52
+  fields:
+    name: Congo, The Democratic Republic of the
+- model: base.country
+  pk: 53
+  fields:
+    name: Cook Islands
+- model: base.country
+  pk: 54
+  fields:
+    name: Costa Rica
+- model: base.country
+  pk: 55
+  fields:
+    name: Côte d'Ivoire
+- model: base.country
+  pk: 56
+  fields:
+    name: Croatia
+- model: base.country
+  pk: 57
+  fields:
+    name: Cuba
+- model: base.country
+  pk: 58
+  fields:
+    name: Curaçao
+- model: base.country
+  pk: 59
+  fields:
+    name: Cyprus
+- model: base.country
+  pk: 60
+  fields:
+    name: Czech Republic
+- model: base.country
+  pk: 61
+  fields:
+    name: Denmark
+- model: base.country
+  pk: 62
+  fields:
+    name: Djibouti
+- model: base.country
+  pk: 63
+  fields:
+    name: Dominica
+- model: base.country
+  pk: 64
+  fields:
+    name: Dominican Republic
+- model: base.country
+  pk: 65
+  fields:
+    name: Ecuador
+- model: base.country
+  pk: 66
+  fields:
+    name: Egypt
+- model: base.country
+  pk: 67
+  fields:
+    name: El Salvador
+- model: base.country
+  pk: 68
+  fields:
+    name: Equatorial Guinea
+- model: base.country
+  pk: 69
+  fields:
+    name: Eritrea
+- model: base.country
+  pk: 70
+  fields:
+    name: Estonia
+- model: base.country
+  pk: 71
+  fields:
+    name: Ethiopia
+- model: base.country
+  pk: 72
+  fields:
+    name: Falkland Islands (Malvinas)
+- model: base.country
+  pk: 73
+  fields:
+    name: Faroe Islands
+- model: base.country
+  pk: 74
+  fields:
+    name: Fiji
+- model: base.country
+  pk: 75
+  fields:
+    name: Finland
+- model: base.country
+  pk: 76
+  fields:
+    name: France
+- model: base.country
+  pk: 77
+  fields:
+    name: French Guiana
+- model: base.country
+  pk: 78
+  fields:
+    name: French Polynesia
+- model: base.country
+  pk: 79
+  fields:
+    name: French Southern Territories
+- model: base.country
+  pk: 80
+  fields:
+    name: Gabon
+- model: base.country
+  pk: 81
+  fields:
+    name: Gambia
+- model: base.country
+  pk: 82
+  fields:
+    name: Georgia
+- model: base.country
+  pk: 83
+  fields:
+    name: Germany
+- model: base.country
+  pk: 84
+  fields:
+    name: Ghana
+- model: base.country
+  pk: 85
+  fields:
+    name: Gibraltar
+- model: base.country
+  pk: 86
+  fields:
+    name: Greece
+- model: base.country
+  pk: 87
+  fields:
+    name: Greenland
+- model: base.country
+  pk: 88
+  fields:
+    name: Grenada
+- model: base.country
+  pk: 89
+  fields:
+    name: Guadeloupe
+- model: base.country
+  pk: 90
+  fields:
+    name: Guam
+- model: base.country
+  pk: 91
+  fields:
+    name: Guatemala
+- model: base.country
+  pk: 92
+  fields:
+    name: Guernsey
+- model: base.country
+  pk: 93
+  fields:
+    name: Guinea
+- model: base.country
+  pk: 94
+  fields:
+    name: Guinea-Bissau
+- model: base.country
+  pk: 95
+  fields:
+    name: Guyana
+- model: base.country
+  pk: 96
+  fields:
+    name: Haiti
+- model: base.country
+  pk: 97
+  fields:
+    name: Heard Island and McDonald Islands
+- model: base.country
+  pk: 98
+  fields:
+    name: Holy See (Vatican City State)
+- model: base.country
+  pk: 99
+  fields:
+    name: Honduras
+- model: base.country
+  pk: 100
+  fields:
+    name: Hong Kong
+- model: base.country
+  pk: 101
+  fields:
+    name: Hungary
+- model: base.country
+  pk: 102
+  fields:
+    name: Iceland
+- model: base.country
+  pk: 103
+  fields:
+    name: India
+- model: base.country
+  pk: 104
+  fields:
+    name: Indonesia
+- model: base.country
+  pk: 105
+  fields:
+    name: Iran, Islamic Republic of
+- model: base.country
+  pk: 106
+  fields:
+    name: Iraq
+- model: base.country
+  pk: 107
+  fields:
+    name: Ireland
+- model: base.country
+  pk: 108
+  fields:
+    name: Isle of Man
+- model: base.country
+  pk: 109
+  fields:
+    name: Israel
+- model: base.country
+  pk: 110
+  fields:
+    name: Italy
+- model: base.country
+  pk: 111
+  fields:
+    name: Jamaica
+- model: base.country
+  pk: 112
+  fields:
+    name: Japan
+- model: base.country
+  pk: 113
+  fields:
+    name: Jersey
+- model: base.country
+  pk: 114
+  fields:
+    name: Jordan
+- model: base.country
+  pk: 115
+  fields:
+    name: Kazakhstan
+- model: base.country
+  pk: 116
+  fields:
+    name: Kenya
+- model: base.country
+  pk: 117
+  fields:
+    name: Kiribati
+- model: base.country
+  pk: 118
+  fields:
+    name: Korea, Democratic People's Republic of
+- model: base.country
+  pk: 119
+  fields:
+    name: Korea, Republic of
+- model: base.country
+  pk: 120
+  fields:
+    name: Kuwait
+- model: base.country
+  pk: 121
+  fields:
+    name: Kyrgyzstan
+- model: base.country
+  pk: 122
+  fields:
+    name: Lao People's Democratic Republic
+- model: base.country
+  pk: 123
+  fields:
+    name: Latvia
+- model: base.country
+  pk: 124
+  fields:
+    name: Lebanon
+- model: base.country
+  pk: 125
+  fields:
+    name: Lesotho
+- model: base.country
+  pk: 126
+  fields:
+    name: Liberia
+- model: base.country
+  pk: 127
+  fields:
+    name: Libya
+- model: base.country
+  pk: 128
+  fields:
+    name: Liechtenstein
+- model: base.country
+  pk: 129
+  fields:
+    name: Lithuania
+- model: base.country
+  pk: 130
+  fields:
+    name: Luxembourg
+- model: base.country
+  pk: 131
+  fields:
+    name: Macao
+- model: base.country
+  pk: 132
+  fields:
+    name: Macedonia, Republic of
+- model: base.country
+  pk: 133
+  fields:
+    name: Madagascar
+- model: base.country
+  pk: 134
+  fields:
+    name: Malawi
+- model: base.country
+  pk: 135
+  fields:
+    name: Malaysia
+- model: base.country
+  pk: 136
+  fields:
+    name: Maldives
+- model: base.country
+  pk: 137
+  fields:
+    name: Mali
+- model: base.country
+  pk: 138
+  fields:
+    name: Malta
+- model: base.country
+  pk: 139
+  fields:
+    name: Marshall Islands
+- model: base.country
+  pk: 140
+  fields:
+    name: Martinique
+- model: base.country
+  pk: 141
+  fields:
+    name: Mauritania
+- model: base.country
+  pk: 142
+  fields:
+    name: Mauritius
+- model: base.country
+  pk: 143
+  fields:
+    name: Mayotte
+- model: base.country
+  pk: 144
+  fields:
+    name: Mexico
+- model: base.country
+  pk: 145
+  fields:
+    name: Micronesia, Federated States of
+- model: base.country
+  pk: 146
+  fields:
+    name: Moldova, Republic of
+- model: base.country
+  pk: 147
+  fields:
+    name: Monaco
+- model: base.country
+  pk: 148
+  fields:
+    name: Mongolia
+- model: base.country
+  pk: 149
+  fields:
+    name: Montenegro
+- model: base.country
+  pk: 150
+  fields:
+    name: Montserrat
+- model: base.country
+  pk: 151
+  fields:
+    name: Morocco
+- model: base.country
+  pk: 152
+  fields:
+    name: Mozambique
+- model: base.country
+  pk: 153
+  fields:
+    name: Myanmar
+- model: base.country
+  pk: 154
+  fields:
+    name: Namibia
+- model: base.country
+  pk: 155
+  fields:
+    name: Nauru
+- model: base.country
+  pk: 156
+  fields:
+    name: Nepal
+- model: base.country
+  pk: 157
+  fields:
+    name: Netherlands
+- model: base.country
+  pk: 158
+  fields:
+    name: New Caledonia
+- model: base.country
+  pk: 159
+  fields:
+    name: New Zealand
+- model: base.country
+  pk: 160
+  fields:
+    name: Nicaragua
+- model: base.country
+  pk: 161
+  fields:
+    name: Niger
+- model: base.country
+  pk: 162
+  fields:
+    name: Nigeria
+- model: base.country
+  pk: 163
+  fields:
+    name: Niue
+- model: base.country
+  pk: 164
+  fields:
+    name: Norfolk Island
+- model: base.country
+  pk: 165
+  fields:
+    name: Northern Mariana Islands
+- model: base.country
+  pk: 166
+  fields:
+    name: Norway
+- model: base.country
+  pk: 167
+  fields:
+    name: Oman
+- model: base.country
+  pk: 168
+  fields:
+    name: Pakistan
+- model: base.country
+  pk: 169
+  fields:
+    name: Palau
+- model: base.country
+  pk: 170
+  fields:
+    name: Palestine, State of
+- model: base.country
+  pk: 171
+  fields:
+    name: Panama
+- model: base.country
+  pk: 172
+  fields:
+    name: Papua New Guinea
+- model: base.country
+  pk: 173
+  fields:
+    name: Paraguay
+- model: base.country
+  pk: 174
+  fields:
+    name: Peru
+- model: base.country
+  pk: 175
+  fields:
+    name: Philippines
+- model: base.country
+  pk: 176
+  fields:
+    name: Pitcairn
+- model: base.country
+  pk: 177
+  fields:
+    name: Poland
+- model: base.country
+  pk: 178
+  fields:
+    name: Portugal
+- model: base.country
+  pk: 179
+  fields:
+    name: Puerto Rico
+- model: base.country
+  pk: 180
+  fields:
+    name: Qatar
+- model: base.country
+  pk: 181
+  fields:
+    name: Réunion
+- model: base.country
+  pk: 182
+  fields:
+    name: Romania
+- model: base.country
+  pk: 183
+  fields:
+    name: Russian Federation
+- model: base.country
+  pk: 184
+  fields:
+    name: Rwanda
+- model: base.country
+  pk: 185
+  fields:
+    name: Saint Barthélemy
+- model: base.country
+  pk: 186
+  fields:
+    name: Saint Helena, Ascension and Tristan da Cunha
+- model: base.country
+  pk: 187
+  fields:
+    name: Saint Kitts and Nevis
+- model: base.country
+  pk: 188
+  fields:
+    name: Saint Lucia
+- model: base.country
+  pk: 189
+  fields:
+    name: Saint Martin (French part)
+- model: base.country
+  pk: 190
+  fields:
+    name: Saint Pierre and Miquelon
+- model: base.country
+  pk: 191
+  fields:
+    name: Saint Vincent and the Grenadines
+- model: base.country
+  pk: 192
+  fields:
+    name: Samoa
+- model: base.country
+  pk: 193
+  fields:
+    name: San Marino
+- model: base.country
+  pk: 194
+  fields:
+    name: Sao Tome and Principe
+- model: base.country
+  pk: 195
+  fields:
+    name: Saudi Arabia
+- model: base.country
+  pk: 196
+  fields:
+    name: Senegal
+- model: base.country
+  pk: 197
+  fields:
+    name: Serbia
+- model: base.country
+  pk: 198
+  fields:
+    name: Seychelles
+- model: base.country
+  pk: 199
+  fields:
+    name: Sierra Leone
+- model: base.country
+  pk: 200
+  fields:
+    name: Singapore
+- model: base.country
+  pk: 201
+  fields:
+    name: Sint Maarten (Dutch part)
+- model: base.country
+  pk: 202
+  fields:
+    name: Slovakia
+- model: base.country
+  pk: 203
+  fields:
+    name: Slovenia
+- model: base.country
+  pk: 204
+  fields:
+    name: Solomon Islands
+- model: base.country
+  pk: 205
+  fields:
+    name: Somalia
+- model: base.country
+  pk: 206
+  fields:
+    name: South Africa
+- model: base.country
+  pk: 207
+  fields:
+    name: South Georgia and the South Sandwich Islands
+- model: base.country
+  pk: 208
+  fields:
+    name: Spain
+- model: base.country
+  pk: 209
+  fields:
+    name: Sri Lanka
+- model: base.country
+  pk: 210
+  fields:
+    name: Sudan
+- model: base.country
+  pk: 211
+  fields:
+    name: Suriname
+- model: base.country
+  pk: 212
+  fields:
+    name: South Sudan
+- model: base.country
+  pk: 213
+  fields:
+    name: Svalbard and Jan Mayen
+- model: base.country
+  pk: 214
+  fields:
+    name: Swaziland
+- model: base.country
+  pk: 215
+  fields:
+    name: Sweden
+- model: base.country
+  pk: 216
+  fields:
+    name: Switzerland
+- model: base.country
+  pk: 217
+  fields:
+    name: Syrian Arab Republic
+- model: base.country
+  pk: 218
+  fields:
+    name: Taiwan, Province of China
+- model: base.country
+  pk: 219
+  fields:
+    name: Tajikistan
+- model: base.country
+  pk: 220
+  fields:
+    name: Tanzania, United Republic of
+- model: base.country
+  pk: 221
+  fields:
+    name: Thailand
+- model: base.country
+  pk: 222
+  fields:
+    name: Timor-Leste
+- model: base.country
+  pk: 223
+  fields:
+    name: Togo
+- model: base.country
+  pk: 224
+  fields:
+    name: Tokelau
+- model: base.country
+  pk: 225
+  fields:
+    name: Tonga
+- model: base.country
+  pk: 226
+  fields:
+    name: Trinidad and Tobago
+- model: base.country
+  pk: 227
+  fields:
+    name: Tunisia
+- model: base.country
+  pk: 228
+  fields:
+    name: Turkey
+- model: base.country
+  pk: 229
+  fields:
+    name: Turkmenistan
+- model: base.country
+  pk: 230
+  fields:
+    name: Turks and Caicos Islands
+- model: base.country
+  pk: 231
+  fields:
+    name: Tuvalu
+- model: base.country
+  pk: 232
+  fields:
+    name: Uganda
+- model: base.country
+  pk: 233
+  fields:
+    name: Ukraine
+- model: base.country
+  pk: 234
+  fields:
+    name: United Arab Emirates
+- model: base.country
+  pk: 235
+  fields:
+    name: United Kingdom
+- model: base.country
+  pk: 236
+  fields:
+    name: United States
+- model: base.country
+  pk: 237
+  fields:
+    name: United States Minor Outlying Islands
+- model: base.country
+  pk: 238
+  fields:
+    name: Uruguay
+- model: base.country
+  pk: 239
+  fields:
+    name: Uzbekistan
+- model: base.country
+  pk: 240
+  fields:
+    name: Vanuatu
+- model: base.country
+  pk: 241
+  fields:
+    name: Venezuela, Bolivarian Republic of
+- model: base.country
+  pk: 242
+  fields:
+    name: Viet Nam
+- model: base.country
+  pk: 243
+  fields:
+    name: Virgin Islands, British
+- model: base.country
+  pk: 244
+  fields:
+    name: Virgin Islands, U.S.
+- model: base.country
+  pk: 245
+  fields:
+    name: Wallis and Futuna
+- model: base.country
+  pk: 246
+  fields:
+    name: Western Sahara
+- model: base.country
+  pk: 247
+  fields:
+    name: Yemen
+- model: base.country
+  pk: 248
+  fields:
+    name: Zambia
+- model: base.country
+  pk: 249
+  fields:
+    name: Zimbabwe

@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="SNU BUDDY">
+        <meta name="author" content="Hyungsuk Yoon">
+
+        <title>{% block title %}SNU BUDDY{% endblock %}</title>
+
+        <!-- Bootstrap -->
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <!-- Bootstrap end -->
+
+        <link rel="stylesheet" href="/static/css/base.css">
+    </head>
+    <body class="{% block body_class %}{% endblock %}">
+
+        <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">SNU Buddy</a>
+                </div>
+
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <!--<li id="NavHome"><a href="/">Home</a></li>-->
+                        {% if user.is_authenticated %}
+                        <li id="NavPersonal"><a href="/personal/">Personal</a></li>
+                        <!--
+                        <li id="NavGroup"><a href="/group/">Group</a></li>
+                        <li id="NavTeam"><a href="/team/">Team</a></li>
+                        -->
+                        {% endif %}
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        {% if user.is_authenticated %}
+                        <li><p class="navbar-text">{{ user.first_name }} ({{ user.username }})</p></li>
+                        <li id="NavSetting"><a href="/setting/">Setting</a></li>
+                        <li><a href="/accounts/logout/">Logout</a></li>
+                        {% else %}
+                        <li id="NavLogin"><a href="/accounts/login/">Login</a></li>
+                        <li id="NavRegister"><a href="/accounts/register/">Register</a></li>
+                        {% endif %}
+                    </ul>
+                </div><!--/.nav-collapse -->
+
+            </div>
+        </nav>
+
+        {% block content %}{% endblock %}
+
+        <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+
+        <!-- Bootstrap -->
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+        <!-- Bootstrap end -->
+
+        <script src="/static/js/script.js"></script>
+    </body>
+</html>

@@ -1,0 +1,164 @@
+- model: base.language
+  pk: 1
+  fields:
+    name: Arabic
+- model: base.language
+  pk: 2
+  fields:
+    name: Awadhi
+- model: base.language
+  pk: 3
+  fields:
+    name: Azerbaijani
+- model: base.language
+  pk: 4
+  fields:
+    name: Bengali
+- model: base.language
+  pk: 5
+  fields:
+    name: Bhojpuri
+- model: base.language
+  pk: 6
+  fields:
+    name: Burmese
+- model: base.language
+  pk: 7
+  fields:
+    name: Chinese
+- model: base.language
+  pk: 8
+  fields:
+    name: Dutch
+- model: base.language
+  pk: 9
+  fields:
+    name: English
+- model: base.language
+  pk: 10
+  fields:
+    name: French
+- model: base.language
+  pk: 11
+  fields:
+    name: German
+- model: base.language
+  pk: 12
+  fields:
+    name: Gujarati
+- model: base.language
+  pk: 13
+  fields:
+    name: Hausa
+- model: base.language
+  pk: 14
+  fields:
+    name: Hindi
+- model: base.language
+  pk: 15
+  fields:
+    name: Italian
+- model: base.language
+  pk: 16
+  fields:
+    name: Japanese
+- model: base.language
+  pk: 17
+  fields:
+    name: Javanese
+- model: base.language
+  pk: 18
+  fields:
+    name: Kannada
+- model: base.language
+  pk: 19
+  fields:
+    name: Korean
+- model: base.language
+  pk: 20
+  fields:
+    name: Maithili
+- model: base.language
+  pk: 21
+  fields:
+    name: Malayalam
+- model: base.language
+  pk: 22
+  fields:
+    name: Marathi
+- model: base.language
+  pk: 23
+  fields:
+    name: Oriya
+- model: base.language
+  pk: 24
+  fields:
+    name: Panjabi
+- model: base.language
+  pk: 25
+  fields:
+    name: Persian
+- model: base.language
+  pk: 26
+  fields:
+    name: Polish
+- model: base.language
+  pk: 27
+  fields:
+    name: Portuguese
+- model: base.language
+  pk: 28
+  fields:
+    name: Romanian
+- model: base.language
+  pk: 29
+  fields:
+    name: Russian
+- model: base.language
+  pk: 30
+  fields:
+    name: Serbo-Croatian4
+- model: base.language
+  pk: 31
+  fields:
+    name: Sindh
+- model: base.language
+  pk: 32
+  fields:
+    name: Spanish
+- model: base.language
+  pk: 33
+  fields:
+    name: Sunda
+- model: base.language
+  pk: 34
+  fields:
+    name: Tamil
+- model: base.language
+  pk: 35
+  fields:
+    name: Telugu
+- model: base.language
+  pk: 36
+  fields:
+    name: Thai
+- model: base.language
+  pk: 37
+  fields:
+    name: Turkish
+- model: base.language
+  pk: 38
+  fields:
+    name: Ukrainian
+- model: base.language
+  pk: 39
+  fields:
+    name: Urdu
+- model: base.language
+  pk: 40
+  fields:
+    name: Vietnamese
+- model: base.language
+  pk: 41
+  fields:
+    name: Yoruba
