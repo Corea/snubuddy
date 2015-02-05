@@ -1,0 +1,2 @@
+# snubuddy
+SNU BUDDY homepage
