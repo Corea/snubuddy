@@ -1,0 +1,47 @@
+{% extends "matching/base.html" %}
+{% load filters %}
+
+{% block content %}
+<div class="container">
+    <h1 class="page-header">Buddy List</h1>
+    <table id="BuddyTable" class="table table-condensed table-striped table-center">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Buddy Gender<br>Preference</th>
+                <th>Age</th>
+                <th>Major</th>
+                <th>Nationality</th>
+                <th>Matched Buddies</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for item in matching_list %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ item.user.first_name }} {{ item.user.last_name }}</td>
+            <td>{{ item.user.profile.get_gender_display }}</td>
+            <td>{{ item.get_gender_preference_display }}</td>
+            <td>{{ item.user.profile.birth|age }}</td>
+            <td>{{ item.major }}</td>
+            <td>{{ item.user.profile.country }}</td>
+            <td>{{ item|get_count_matched_buddies }} / {{ item.max_buddy_number }}</td>
+            <td><a class="btn btn-sm btn-primary" href="/matching/view/{{ item.id }}/">View</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+
+        {% if user|has_group:"Korean" %}
+        <tfoot>
+            <tr>
+                <td colspan="9"><a class="btn btn-primary" href="/matching/register/">Registration for SNU Student</a></td>
+            </tr>
+        </tfoot>
+        {% endif %}
+    </table>
+</div>
+{% endblock %}

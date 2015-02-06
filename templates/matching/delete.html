@@ -1,0 +1,83 @@
+{% extends "matching/base.html" %}
+{% load filters %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+
+        <h1 class="page-header">Delete Buddy Profile</h1>
+
+        <p>
+            Please check again..
+        </p>
+        <p>
+            <a href="/matching/delete/bye/{{ matching.id }}/" class="btn btn-danger">Delete!</a>
+        </p>
+
+        <table id="BuddyTable" class="table">
+            <tr>
+                <th class="col-sm-3">Name</th>
+                <td class="col-sm-9">{{ matching.user.first_name }} {{ matching.user.last_name }}</td>
+            </tr>
+
+            <tr>
+                <th>Gender</th>
+                <td>{{ matching.user.profile.get_gender_display }}</td>
+            </tr>
+
+            <tr>
+                <th>Age</th>
+                <td>{{ matching.user.profile.birth|age }}</td>
+            </tr>
+
+            <tr>
+                <th>Major</th>
+                <td>{{ matching.major }}</td>
+            </tr>
+
+            <tr>
+                <th>Hobby</th>
+                <td>{{ matching.hobby }}</td>
+            </tr>
+
+            <tr>
+                <th>Interest</th>
+                <td>{{ matching.interest }}</td>
+            </tr>
+
+            <tr>
+                <th>Nationality</th>
+                <td>{{ matching.user.profile.country }}</td>
+            </tr>
+
+            <tr>
+                <th>Language</th>
+                <td> ??? </td>
+            </tr>
+
+            <tr>
+                <th>Self-Introduction</th>
+                <td>{{ matching.self_introduction }}</td>
+            </tr>
+
+            <tr>
+                <th>Max # of Buddies</th>
+                <td>{{ matching|get_count_matched_buddies }} / <strong>Max : {{ matching.max_buddy_number }}</strong></td>
+            </tr>
+
+            <tr>
+                <th>Buddy Gender Preference</th>
+                <td>{{ matching.get_gender_preference_display }}</td>
+            </tr>
+
+            <tr>
+                <th>Comment</th>
+                <td>{{ matching.comment }}</td>
+            </tr>
+
+            <tr>
+            </tr>
+        </table>
+    </div>
+</div>
+{% endblock %}

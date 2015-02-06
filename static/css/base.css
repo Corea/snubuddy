@@ -4,3 +4,20 @@ body.application #NavApplication a,
 body.matching #NavMatching a {
     color: white;
 }
+
+table.table-center th,
+table.table-center td {
+    text-align: center;
+}
+
+#BuddyTable td {
+    vertical-align: middle;
+}
+#BuddyTable tfoot td {
+    padding: 1em;
+    text-align: right;
+}
+
+.be_a_buddy {
+    text-align: right;
+}

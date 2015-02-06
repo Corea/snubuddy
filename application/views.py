@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden
@@ -35,7 +37,7 @@ def register(request):
         application.user = request.user
         application.season = get_this_season()
         application.save()
-        return render(request, 'application/register_finish.html', {})
+        return redirect(register_finish)
 
     application_exist = ApplicationForeigner.objects.filter(
         user=request.user,
@@ -45,3 +47,8 @@ def register(request):
         'form': form,
         'exists': application_exist
     })
+
+
+@login_required
+def register_finish(request):
+    return render(request, 'application/register_finish.html', {})

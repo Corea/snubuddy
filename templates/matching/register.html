@@ -1,0 +1,16 @@
+{% extends "matching/base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="page-header">Buddy Matching Registration for Korean</h1>
+    {% if exists %}
+    <div class="alert alert-danger">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        You already submitted your profile!
+        If you submit again, then newer one will <strong>replace</strong> old one.
+    </p>
+    {% endif %}
+</div>
+
+{% include "form_show.html" %}
+{% endblock %}

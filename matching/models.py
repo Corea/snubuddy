@@ -6,6 +6,15 @@ from base.models import Season, Language
 
 # Buddy Matching
 class Matching(models.Model):
+    MALE = 'M'
+    FEMALE = 'F'
+    Both = 'B'
+    GENDER_CHOICES = (
+        (MALE, 'Male'),
+        (FEMALE, 'Female'),
+        (Both, 'Both'),
+    )
+
     user = models.ForeignKey(User)
     season = models.ForeignKey(Season)
     major = models.CharField(max_length=64, null=False)
@@ -13,6 +22,11 @@ class Matching(models.Model):
     interest = models.CharField(max_length=128, null=False)
     self_introduction = models.TextField(null=False)
     comment = models.TextField(null=False)
+    
+    gender_preference = models.CharField(
+        max_length=1, choices=GENDER_CHOICES, null=True)
+    max_buddy_number = models.IntegerField(null=True)
+
     def __unicode__(self):
         return u'%s %s' % (self.user.first_name, self.user.last_name)
 

@@ -13,10 +13,8 @@
 
         <!-- Bootstrap -->
         <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 
-        <!-- Optional theme -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
         <!-- Bootstrap end -->
 
         <link rel="stylesheet" href="/static/css/base.css">
@@ -47,7 +45,7 @@
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right">
-                        {% if user|has_group:"Korean" %}
+                        {% if user %}
                         <li><p class="navbar-text">{{ user.name }} ({{ user.username }})</p></li>
                         <li id="NavSetting"><a href="/setting/">Setting</a></li>
                         <li><a href="/account/logout/">Logout</a></li>
@@ -67,7 +65,7 @@
 
         <!-- Bootstrap -->
         <!-- Latest compiled and minified JavaScript -->
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
         <!-- Bootstrap end -->
 
         <script src="/static/js/script.js"></script>
