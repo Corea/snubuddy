@@ -1,3 +1,5 @@
+{% load filters %}
+
 <!doctype html>
 <html>
     <head>
@@ -19,6 +21,7 @@
 
         <link rel="stylesheet" href="/static/css/base.css">
     </head>
+
     <body class="{% block body_class %}{% endblock %}">
 
         <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
@@ -36,7 +39,9 @@
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
                         <!--<li id="NavHome"><a href="/">Home</a></li>-->
-                        {% if user.is_authenticated %}
+                        <li id="NavApplication"><a href="/application/">Application</a></li>
+                        <li id="NavMatching"><a href="/matching/">Buddy Matching</a></li>
+                        {% if user|has_group:"Korean" %}
                         <li id="NavPersonal"><a href="/personal/">Personal</a></li>
                         <!--
                         <li id="NavGroup"><a href="/group/">Group</a></li>
@@ -46,13 +51,13 @@
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right">
-                        {% if user.is_authenticated %}
-                        <li><p class="navbar-text">{{ user.first_name }} ({{ user.username }})</p></li>
+                        {% if user|has_group:"Korean" %}
+                        <li><p class="navbar-text">{{ user.name }} ({{ user.username }})</p></li>
                         <li id="NavSetting"><a href="/setting/">Setting</a></li>
-                        <li><a href="/accounts/logout/">Logout</a></li>
+                        <li><a href="/account/logout/">Logout</a></li>
                         {% else %}
-                        <li id="NavLogin"><a href="/accounts/login/">Login</a></li>
-                        <li id="NavRegister"><a href="/accounts/register/">Register</a></li>
+                        <li id="NavLogin"><a href="/account/login/">Login</a></li>
+                        <li id="NavRegister"><a href="/account/register/">Register</a></li>
                         {% endif %}
                     </ul>
                 </div><!--/.nav-collapse -->

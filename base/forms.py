@@ -22,16 +22,24 @@ class RegistrationForm(forms.Form):
     password2 = forms.CharField(widget=forms.PasswordInput,
                                 label=_("Password (again)"),
                                 required=True)
-    korean_name = forms.CharField(max_length=64)
+    korean_name = forms.CharField(max_length=64,
+                                  label=_("Korean Name (Optional)"),
+                                  required=False)
     gender = forms.ChoiceField(choices=UserProfile.GENDER_CHOICES,
                                required=True)
     birth = forms.DateField(required=True)
     country = forms.ModelChoiceField(queryset=Country.objects.all())
 
     def clean(self):
-        existing = User.objects.filter(username__iexact=self.cleaned_data['username'])
-        if existing.exists():
-            raise forms.ValidationError(_("A user with that username already exists."))
+        if 'username' in self.cleaned_data:
+            existing = User.objects.filter(username__iexact=self.cleaned_data['username'])
+            if existing.exists():
+                raise forms.ValidationError(_("A user with that username already exists."))
+
+        if 'email' in self.cleaned_data:
+            existing = User.objects.filter(email__iexact=self.cleaned_data['email'])
+            if existing.exists():
+                raise forms.ValidationError(_("A user with that email already exists."))
 
         if 'password1' in self.cleaned_data and 'password2' in self.cleaned_data:
             if self.cleaned_data['password1'] != self.cleaned_data['password2']:

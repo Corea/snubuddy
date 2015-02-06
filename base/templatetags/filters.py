@@ -9,6 +9,8 @@ import re
 register = template.Library()
 
 class_re = re.compile(r'(?<=class=["\'])(.*)(?=["\'])')
+
+
 @register.filter
 def add_class(value, css_class):
     string = unicode(value)
@@ -23,3 +25,8 @@ def add_class(value, css_class):
     else:
         return mark_safe(string.replace('>', ' class="%s">' % css_class))
     return value
+
+
+@register.filter
+def has_group(user, group_name):
+    return user.groups.filter(name=group_name).exists()
