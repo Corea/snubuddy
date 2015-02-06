@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('snu_id', models.CharField(max_length=16)),
                 ('fb_name', models.CharField(max_length=64)),
                 ('fb_email', models.CharField(max_length=64)),
-                ('semester', models.ForeignKey(to='base.Season')),
+                ('season', models.ForeignKey(to='base.Season')),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={

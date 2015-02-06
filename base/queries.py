@@ -3,5 +3,5 @@
 from base.models import Season
 
 
-def get_this_semester():
+def get_this_season():
     return Season.objects.filter(is_this_season=True)[0]

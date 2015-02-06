@@ -56,3 +56,6 @@ target/
 # Secret
 settings.py
 setting_db.sql
+
+# Vim
+*.sw?

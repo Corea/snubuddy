@@ -8,7 +8,7 @@ from base.models import Season
 
 class ApplicationForeigner(models.Model):
     user = models.ForeignKey(User)
-    semester = models.ForeignKey(Season)
+    season = models.ForeignKey(Season)
     snu_id = models.CharField(max_length=16, null=False)
     fb_name = models.CharField(max_length=64, null=False)
     fb_email = models.CharField(max_length=64, null=False)

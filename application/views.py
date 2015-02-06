@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden
 
-from base.queries import get_this_semester
+from base.queries import get_this_season
 from base.decorators import admin_required
 
 from application.models import ApplicationForeigner
@@ -18,7 +18,7 @@ def index(request):
 @login_required
 def list(request):
     application_list = ApplicationForeigner.objects.filter(
-        semester=get_this_semester())
+        season=get_this_season())
     return render(request, 'application/list.html', {
         'application_list': application_list
     })
@@ -30,16 +30,16 @@ def register(request):
     if request.method == 'POST' and form.is_valid():
         ApplicationForeigner.objects.filter(
             user=request.user,
-            semester=get_this_semester()).delete()
+            season=get_this_season()).delete()
         application = form.save(commit=False)
         application.user = request.user
-        application.semester = get_this_semester()
+        application.season = get_this_season()
         application.save()
         return render(request, 'application/register_finish.html', {})
 
     application_exist = ApplicationForeigner.objects.filter(
         user=request.user,
-        semester=get_this_semester()).count() > 0
+        season=get_this_season()).count() > 0
         
     return render(request, 'application/register.html', {
         'form': form,
