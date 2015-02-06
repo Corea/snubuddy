@@ -30,3 +30,8 @@ def add_class(value, css_class):
 @register.filter
 def has_group(user, group_name):
     return user.groups.filter(name=group_name).exists()
+
+
+@register.filter
+def get_profile(user):
+    return UserProfile.objects.get(user=user)

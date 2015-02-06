@@ -42,8 +42,10 @@ class UserProfile(models.Model):
         (FEMALE, 'Female'),
     )
 
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, related_name='profile')
     korean_name = models.CharField(max_length=64, blank=True, null=False)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, null=False)
     birth = models.DateField(null=False)
     country = models.ForeignKey(Country, null=False)
+
+User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])

@@ -29,7 +29,7 @@ def register(request):
         login(request, user)
         return redirect(index)
 
-    return render(request, 'register.html', {
+    return render(request, 'account/register.html', {
         'form': form
     })
 

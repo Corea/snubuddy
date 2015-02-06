@@ -1,0 +1,15 @@
+{% extends "application/base.html" %}
+
+{% load filters %}
+
+{% block content %}
+<div class="container">
+    <p>
+        <a class="btn btn-primary" href="/application/register/">Register</a>
+        {% if user|has_group:"admin" %}
+        <a class="btn btn-primary" href="/application/list/">List</a>
+        {% endif %}
+    </p>
+</div>
+{% endblock %}
+
