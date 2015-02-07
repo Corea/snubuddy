@@ -50,3 +50,9 @@ def age(birthday):
 @register.filter
 def get_count_matched_buddies(matching):
     return MatchingConnection.objects.filter(korean_matching=matching).count()
+
+
+@register.filter
+def get_level_display(level):
+    levels = ['Beginner', 'Intermediate', 'Advanced', 'Fluent']
+    return levels[level-1]

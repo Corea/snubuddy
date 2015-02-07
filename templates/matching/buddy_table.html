@@ -1,0 +1,77 @@
+{% load filters %}
+
+<table class="buddyTable table">
+    <tr>
+        <th class="col-sm-3">Name</th>
+        <td class="col-sm-9">{{ matching.user.first_name }} {{ matching.user.last_name }}</td>
+    </tr>
+
+    <tr>
+        <th>Gender</th>
+        <td>{{ matching.user.profile.get_gender_display }}</td>
+    </tr>
+
+    <tr>
+        <th>Age</th>
+        <td>{{ matching.user.profile.birth|age }}</td>
+    </tr>
+
+    <tr>
+        <th>Major</th>
+        <td>{{ matching.major }}</td>
+    </tr>
+
+    <tr>
+        <th>Hobby</th>
+        <td>{{ matching.hobby }}</td>
+    </tr>
+
+    <tr>
+        <th>Interest</th>
+        <td>{{ matching.interest }}</td>
+    </tr>
+
+    <tr>
+        <th>Nationality</th>
+        <td>{{ matching.user.profile.country }}</td>
+    </tr>
+
+    <tr>
+        <th>Language</th>
+        <td>
+            {% for item in languages %}
+            {{ item.language.name }}, {{ item.level|get_level_display }}
+            {% if not forloop.last %}<br>{% endif %}
+            {% endfor %}
+        </td>
+    </tr>
+
+    <tr>
+        <th>Self-Introduction</th>
+        <td>{{ matching.self_introduction }}</td>
+    </tr>
+
+    {% if matching.user|has_group:"Korean" %}
+    <tr>
+        <th>Max # of Buddies</th>
+        <td>{{ matching|get_count_matched_buddies }} / <strong>Max : {{ matching.max_buddy_number }}</strong></td>
+    </tr>
+
+    <tr>
+        <th>Buddy Gender Preference</th>
+        <td>{{ matching.get_gender_preference_display }}</td>
+    </tr>
+    {% endif %}
+
+    <tr>
+        <th>Comment</th>
+        <td>{{ matching.comment }}</td>
+    </tr>
+
+    <tr>
+        <td class="delete">{% ifequal user matching.user %}<a href="/matching/delete/{{ matching.id }}/" class="btn btn-danger">Delete</a>{% endifequal %}</td>
+        {% if matching.user|has_group:"Korean" %}
+        <td class="be_a_buddy">{% if not user|has_group:"Korean" %}<a href="/matching/register/{{ matching.id }}/" class="btn btn-info">Be a Buddy</a>{% endif %}</td>
+        {% endif %}
+    </tr>
+</table>

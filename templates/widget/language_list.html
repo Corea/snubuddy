@@ -1,0 +1,20 @@
+<div class="languageList row">
+    <div class="col-xs-4">
+        <select name="language[]" class="form-control">
+            {% for language in language_list %}
+            <option value="{{ language.id }}">{{ language.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-xs-4">
+        <select name="language_level[]" class="form-control">
+            <option value="1">Beginner</option>
+            <option value="2">Intermediate</option>
+            <option value="3">Advanced</option>
+            <option value="4">Fluent</option>
+        </select>
+    </div>
+    <div class="col-xs-2">
+        <a id="LanguageMoreButton" class="btn btn-default">ADD</a>
+    </div>
+</div>

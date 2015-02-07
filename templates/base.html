@@ -39,15 +39,13 @@
                         <!--<li id="NavHome"><a href="/">Home</a></li>-->
                         <li id="NavApplication"><a href="/application/">Application</a></li>
                         <li id="NavMatching"><a href="/matching/">Buddy Matching</a></li>
-                        {% if user|has_group:"Korean" %}
-                        <li id="NavPersonal"><a href="/personal/">Personal</a></li>
-                        {% endif %}
+                        {% if user|has_group:"Korean" %}{% endif %}
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right">
                         {% if user %}
                         <li><p class="navbar-text">{{ user.name }} ({{ user.username }})</p></li>
-                        <li id="NavSetting"><a href="/setting/">Setting</a></li>
+                        <li id="NavSetting"><a href="/account/setting/">Setting</a></li>
                         <li><a href="/account/logout/">Logout</a></li>
                         {% else %}
                         <li id="NavLogin"><a href="/account/login/">Login</a></li>
@@ -69,5 +67,7 @@
         <!-- Bootstrap end -->
 
         <script src="/static/js/script.js"></script>
+
+        {% block js %}{% endblock %}
     </body>
 </html>
