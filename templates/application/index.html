@@ -5,7 +5,9 @@
 {% block content %}
 <div class="container">
     <p>
+        {% if not user|has_group:"Korean" %}
         <a class="btn btn-primary" href="/application/register/">Register</a>
+        {% endif %}
         {% if user|has_group:"admin" %}
         <a class="btn btn-primary" href="/application/list/">List</a>
         {% endif %}
