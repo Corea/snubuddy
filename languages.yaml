@@ -162,3 +162,7 @@
   pk: 41
   fields:
     name: Yoruba
+- model: base.language
+  pk: 42
+  fields:
+    name: Swedish

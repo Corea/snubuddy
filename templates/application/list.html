@@ -22,7 +22,7 @@
         <tr>
             <td>{{ forloop.counter }}</td>
             <td>{{ item.user.first_name }} {{ item.user.last_name }}</td>
-            <td>{{ item.user.profile.gender }}</td>
+            <td>{{ item.user.profile.get_gender_display }}</td>
             <td>{{ item.user.profile.birth }}</td>
             <td>{{ item.user.profile.country }}</td>
             <td>{{ item.snu_id }}</td>

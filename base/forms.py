@@ -33,7 +33,8 @@ class RegistrationForm(forms.Form):
                                   required=False)
     gender = forms.ChoiceField(choices=UserProfile.GENDER_CHOICES,
                                required=True)
-    birth = forms.DateField(required=True)
+    birth = forms.DateField(required=True,
+                            help_text="ex) 1990-01-23")
     country = forms.ModelChoiceField(queryset=Country.objects.all())
 
     def clean(self):
