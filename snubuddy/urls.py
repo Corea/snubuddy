@@ -7,10 +7,6 @@ from matching import views as matching_views
 
 
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'snubuddy.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
-
     url(r'^admin/', include(admin.site.urls)),
 
     url(r'^$', base_views.index, name='index'),
@@ -37,6 +33,9 @@ urlpatterns = patterns('',
     url(r'^application/list/$',
         application_views.list,
         name='application_list'),
+    url(r'^application/accept/(?P<application_id>\d+)/$',
+        application_views.accept,
+        name='application_accept'),
 
     url(r'^matching/$',
         matching_views.list,
@@ -60,16 +59,7 @@ urlpatterns = patterns('',
         matching_views.delete_bye,
         name='matching_delete_bye'),
 
-    # url(r'^setting/$', base_views.user_setting, name='setting'),
-
     # url(r'^personal/$', base_views.personal_list, name='personal_list'),
     # url(r'^personal/get_photo/(\d+)/$', base_views.personal_get_photo, name='personal_get_photo'),
     # url(r'^personal/add/$', base_views.personal_add, name='personal_add'),
-
-
-    # url(r'^accounts/register/$', register, {
-    #     'backend': 'registration.backends.default.DefaultBackend',
-    #     'form_class': base_forms.UserRegForm
-    # }, name='registration_register'),
-    # url(r'^accounts/', include('registration.backends.default.urls')),
 )

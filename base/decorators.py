@@ -3,37 +3,29 @@
 from django.http import HttpResponseRedirect
 
 
-def admin_required(function):
-    def wrap(request, *args, **kwargs):
-        if request.user.groups.filter(name='admin').exists():
-             return function(request, *args, **kwargs)
-        else:
-            return HttpResponseRedirect('/')
+def group_required(group_name):
+    def group_required_decorator(function):
+        def wrap(request, *args, **kwargs):
+            if request.user.groups.filter(name=group_name).exists():
+                 return function(request, *args, **kwargs)
+            else:
+                return HttpResponseRedirect('/')
 
-    wrap.__doc__ = function.__doc__
-    wrap.__name__ = function.__name__
-    return wrap
-
-
-def korean_required(function):
-    def wrap(request, *args, **kwargs):
-        if request.user.groups.filter(name='Korean').exists():
-             return function(request, *args, **kwargs)
-        else:
-            return HttpResponseRedirect('/')
-
-    wrap.__doc__ = function.__doc__
-    wrap.__name__ = function.__name__
-    return wrap
+        wrap.__doc__ = function.__doc__
+        wrap.__name__ = function.__name__
+        return wrap
+    return group_required_decorator
 
 
-def foreigner_required(function):
-    def wrap(request, *args, **kwargs):
-        if not request.user.groups.filter(name='Korean').exists():
-             return function(request, *args, **kwargs)
-        else:
-            return HttpResponseRedirect('/')
+def reverse_group_required(group_name):
+    def reverse_group_required_decorator(function):
+        def wrap(request, *args, **kwargs):
+            if not request.user.groups.filter(name=group_name).exists():
+                 return function(request, *args, **kwargs)
+            else:
+                return HttpResponseRedirect('/')
 
-    wrap.__doc__ = function.__doc__
-    wrap.__name__ = function.__name__
-    return wrap
+        wrap.__doc__ = function.__doc__
+        wrap.__name__ = function.__name__
+        return wrap
+    return reverse_group_required_decorator

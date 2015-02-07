@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
 from base.queries import get_this_season
-from base.decorators import korean_required, foreigner_required
+from base.decorators import group_required, reverse_group_required
 from base.models import Language
 
 from matching.models import Matching, MatchingLanguage, MatchingConnection
@@ -12,6 +12,7 @@ from matching.forms import MatchingKoreanForm, MatchingForeignerForm
 
 
 @login_required
+@reverse_group_required('Guest')
 def list(request):
     matching_list = Matching.objects.filter(
         user__groups__name='Korean',
@@ -38,7 +39,7 @@ def remove_prior_matching(request):
     
 
 @login_required
-@korean_required
+@group_required("Korean")
 def register(request):
     form = MatchingKoreanForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
@@ -72,6 +73,7 @@ def register(request):
 
 
 @login_required
+@reverse_group_required('Guest')
 def view(request, matching_id):
     try:
         matching = Matching.objects.get(id=matching_id)
@@ -94,7 +96,7 @@ def view(request, matching_id):
 
 
 @login_required
-@foreigner_required
+@group_required('Foreginer')
 def register_foreigner(request, matching_id):
     try:
         korean_matching = Matching.objects.get(id=matching_id)
@@ -145,6 +147,7 @@ def register_foreigner(request, matching_id):
 
 
 @login_required
+@group_required('Foreginer')
 def register_full(request):
     return render(request, 'matching/register_full.html', {})
 
