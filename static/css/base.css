@@ -1,10 +1,5 @@
 @charset "utf-8";
 
-body.application #NavApplication a,
-body.matching #NavMatching a {
-    color: white;
-}
-
 table.table-center th,
 table.table-center td {
     text-align: center;

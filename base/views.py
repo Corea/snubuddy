@@ -12,7 +12,7 @@ from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponse, HttpResponseForbidden
 
 from base import queries
-from base.forms import RegistrationForm
+from base.forms import RegistrationForm, SettingsForm
 
 
 def index(request):
@@ -35,16 +35,23 @@ def register(request):
 
 
 @login_required
-def user_setting(request):
+def setting(request):
     user = request.user
     form = SettingsForm(data=request.POST or None,
-                        initial={'name': user.first_name})
+                        initial={'first_name': user.first_name,
+                                 'last_name': user.last_name,
+                                 'email': user.email,
+                                 'korean_name': user.profile.korean_name,
+                                 'gender': user.profile.gender,
+                                 'birth': user.profile.birth,
+                                 'country': user.profile.country})
+    form.user = user
 
     if request.method == 'POST' and form.is_valid():
         form.save(user)
         return redirect(index)
 
-    return render(request, 'setting.html', {
+    return render(request, 'account/setting.html', {
         'form': form
     })
 

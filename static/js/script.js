@@ -16,6 +16,8 @@ LanguageRemove = function() {
 $(document).ready(function() {
     var selector_list = [
         'body.login #NavLogin',
+        'body.application #NavApplication',
+        'body.matching #NavMatching',
         'body.home #NavHome',
         'body.personal #NavPersonal',
         'body.group #NavGroup',

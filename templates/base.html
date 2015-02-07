@@ -43,8 +43,8 @@
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right">
-                        {% if user %}
-                        <li><p class="navbar-text">{{ user.name }} ({{ user.username }})</p></li>
+                        {% if user.is_authenticated %}
+                        <li><p class="navbar-text">{{ user.first_name }} {{ user.last_name }} ({{ user.username }})</p></li>
                         <li id="NavSetting"><a href="/account/setting/">Setting</a></li>
                         <li><a href="/account/logout/">Logout</a></li>
                         {% else %}
