@@ -15,5 +15,6 @@ class ApplicationForeignerForm(ModelForm):
             'fb_email': 'Facebook E-Mail'
         }
         help_texts = {
+            'snu_id': 'ex) 2015-99999',
             'fb_name': 'We will send out Facebook invitations for the SNU Buddy group.',
         }

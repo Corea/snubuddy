@@ -16,7 +16,7 @@ from matching.forms import MatchingKoreanForm, MatchingForeignerForm
 def list(request):
     matching_list = Matching.objects.filter(
         user__groups__name='Korean',
-        season=get_this_season())
+        season=get_this_season()).order_by('id')
 
     return render(request, 'matching/list.html', {
         'matching_list': matching_list

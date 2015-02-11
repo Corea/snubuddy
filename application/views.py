@@ -25,7 +25,7 @@ def index(request):
 @login_required
 def list(request):
     application_list = ApplicationForeigner.objects.filter(
-        season=get_this_season())
+        season=get_this_season()).order_by('id')
     return render(request, 'application/list.html', {
         'application_list': application_list
     })
