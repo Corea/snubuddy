@@ -4,7 +4,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
 from base.queries import get_this_season
-from base.decorators import group_required, reverse_group_required
+from base.decorators import (
+    group_required, reverse_group_required, new_buddy_required)
 from base.models import Language
 
 from matching.models import Matching, MatchingLanguage, MatchingConnection
@@ -39,7 +40,7 @@ def remove_prior_matching(request):
     
 
 @login_required
-@group_required("Korean")
+@group_required('Korean')
 def register(request):
     form = MatchingKoreanForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
@@ -96,6 +97,7 @@ def view(request, matching_id):
 
 
 @login_required
+@new_buddy_required
 @group_required('Foreigner')
 def register_foreigner(request, matching_id):
     try:
@@ -147,6 +149,7 @@ def register_foreigner(request, matching_id):
 
 
 @login_required
+@new_buddy_required
 @group_required('Foreigner')
 def register_full(request):
     return render(request, 'matching/register_full.html', {})

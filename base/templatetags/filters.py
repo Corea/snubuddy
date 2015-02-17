@@ -6,6 +6,7 @@ import re
 from django import template
 from django.utils.safestring import mark_safe
 
+from application.models import ApplicationForeigner
 from matching.models import MatchingConnection
 
 
@@ -56,3 +57,11 @@ def get_count_matched_buddies(matching):
 def get_level_display(level):
     levels = ['Beginner', 'Intermediate', 'Advanced', 'Fluent']
     return levels[level-1]
+
+
+@register.filter
+def is_new_buddy(user):
+    application = ApplicationForeigner.objects.filter(user=user)
+    if not application.exists():
+        return False
+    return not application[0].returning

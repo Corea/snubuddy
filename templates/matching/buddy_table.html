@@ -73,7 +73,9 @@
         <td class="be_a_buddy">
         {% if matching.user|has_group:"Korean" %}
         {% if not user|has_group:"Korean" %}
+        {% if user|is_new_buddy %}
             <a href="/matching/register/{{ matching.id }}/" class="btn btn-info">Be a Buddy</a>
+        {% endif %}
         {% endif %}
         {% endif %}
         </td>
