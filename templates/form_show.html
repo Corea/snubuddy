@@ -18,6 +18,12 @@
             <div class="col-sm-10">
                 {% if field.name == 'language' %}
                 {{ field }}
+                {% elif field.name == 'returning' %}
+                <div class="checkbox">
+                    <label>
+                        {{ field }} I AM RETURNING BUDDY
+                    </label>
+                </div>
                 {% else %}
                 {{ field|add_class:"form-control" }}
                 {% endif %}
