@@ -23,6 +23,7 @@ $(document).ready(function() {
         'body.group #NavGroup',
         'body.team #NavTeam',
         'body.setting #NavSetting',
+        'body.korean #NavKorean',
     ];
 
     $(selector_list.join()).addClass('active');

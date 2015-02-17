@@ -48,5 +48,8 @@ class UserProfile(models.Model):
     birth = models.DateField(null=False)
     country = models.ForeignKey(Country, null=False)
 
+    def __unicode__(self):
+        return u'%s %s' % (self.user.first_name, self.user.last_name)
+
 
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])

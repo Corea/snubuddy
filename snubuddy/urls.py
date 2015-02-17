@@ -4,6 +4,7 @@ from django.contrib import admin
 from application import views as application_views
 from base import views as base_views
 from matching import views as matching_views
+from korean import views as korean_views
 
 
 urlpatterns = patterns('',
@@ -59,6 +60,12 @@ urlpatterns = patterns('',
         matching_views.delete_bye,
         name='matching_delete_bye'),
 
+    url(r'^korean/$',
+        korean_views.index,
+        name='korean_index'),
+    url(r'^korean/korean_list/$',
+        korean_views.korean_list,
+        name='korean_korean_list'),
     # url(r'^personal/$', base_views.personal_list, name='personal_list'),
     # url(r'^personal/get_photo/(\d+)/$', base_views.personal_get_photo, name='personal_get_photo'),
     # url(r'^personal/add/$', base_views.personal_add, name='personal_add'),

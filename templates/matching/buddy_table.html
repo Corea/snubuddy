@@ -70,8 +70,12 @@
 
     <tr>
         <td class="delete">{% ifequal user matching.user %}<a href="/matching/delete/{{ matching.id }}/" class="btn btn-danger">Delete</a>{% endifequal %}</td>
+        <td class="be_a_buddy">
         {% if matching.user|has_group:"Korean" %}
-        <td class="be_a_buddy">{% if not user|has_group:"Korean" %}<a href="/matching/register/{{ matching.id }}/" class="btn btn-info">Be a Buddy</a>{% endif %}</td>
+        {% if not user|has_group:"Korean" %}
+            <a href="/matching/register/{{ matching.id }}/" class="btn btn-info">Be a Buddy</a>
         {% endif %}
+        {% endif %}
+        </td>
     </tr>
 </table>

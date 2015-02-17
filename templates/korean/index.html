@@ -1,0 +1,13 @@
+{% extends "korean/base.html" %}
+
+{% load filters %}
+
+{% block content %}
+<div class="container">
+    <p>
+        {% if user|has_group:"admin" %}
+        <a class="btn btn-primary" href="/korean/korean_list/">List</a>
+        {% endif %}
+    </p>
+</div>
+{% endblock %}

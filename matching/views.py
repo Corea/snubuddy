@@ -96,7 +96,7 @@ def view(request, matching_id):
 
 
 @login_required
-@group_required('Foreginer')
+@group_required('Foreigner')
 def register_foreigner(request, matching_id):
     try:
         korean_matching = Matching.objects.get(id=matching_id)
@@ -147,7 +147,7 @@ def register_foreigner(request, matching_id):
 
 
 @login_required
-@group_required('Foreginer')
+@group_required('Foreigner')
 def register_full(request):
     return render(request, 'matching/register_full.html', {})
 

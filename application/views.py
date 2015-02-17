@@ -11,6 +11,8 @@ from base.decorators import group_required
 from application.models import ApplicationForeigner
 from application.forms import ApplicationForeignerForm
 
+from matching.models import Matching
+
 
 @login_required
 def index(request):
@@ -24,10 +26,17 @@ def index(request):
 @group_required('Admin')
 @login_required
 def list(request):
+    application_infos = []
     application_list = ApplicationForeigner.objects.filter(
         season=get_this_season()).order_by('id')
+    for application in application_list:
+        exist = Matching.objects.filter(
+            user=application.user,
+            season=get_this_season()).exists()
+        application_infos.append([application, exist])
+ 
     return render(request, 'application/list.html', {
-        'application_list': application_list
+        'application_infos': application_infos
     })
 
 

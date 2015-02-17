@@ -46,7 +46,9 @@
                         <li id="NavMatching"><a href="/matching/">Buddy Matching</a></li>
                         {% endif %}
 
-                        {% if user|has_group:"Korean" %}{% endif %}
+                        {% if user|has_group:"admin" %}
+                        <li id="NavKorean"><a href="/korean/">Korean Buddy</a></li>
+                        {% endif %}
                         {% endif %}
                     </ul>
 
