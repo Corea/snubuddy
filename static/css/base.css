@@ -4,10 +4,10 @@ table.table-center th,
 table.table-center td {
     text-align: center;
 }
-
-#BuddyTable td {
-    vertical-align: middle;
+table th, table td {
+    vertical-align: middle !important;
 }
+
 #BuddyTable tfoot td {
     padding: 1em;
     text-align: right;

@@ -2,7 +2,7 @@
 
 from django.contrib.auth.models import User, Group
 
-from korean.models import Team, UserTeam
+from korean.models import Team, UserTeam, BuddyGroup, UserGroup
 from base import queries as base_queries
 
 
@@ -15,6 +15,7 @@ def get_korean_list(sorted_birth=False):
     return users
 
 
+# Team
 def get_team(team_id):
     return Team.objects.get(id=team_id)
 
@@ -56,3 +57,36 @@ def make_team_leader(user):
     if userteam is not None:
         userteam.is_leader = True
         userteam.save()
+
+
+# Group
+def get_group(group_id):
+    return BuddyGroup.objects.get(id=group_id)
+
+
+def get_group_list():
+    return BuddyGroup.objects.filter(season=base_queries.get_this_season())
+
+
+def get_usergroup_by_user(user):
+    try:
+        return UserGroup.objects.get(
+            user=user,
+            group__season=base_queries.get_this_season())
+    except:
+        return None
+
+
+def make_group_member(user, group):
+    UserGroup.objects.filter(
+        user=user,
+        group__season=base_queries.get_this_season()).delete()
+
+    UserGroup.objects.create(user=user, group=group)
+
+
+def make_group_leader(user, leader_type):
+    usergroup = get_usergroup_by_user(user)
+    if usergroup is not None:
+        usergroup.leader_type = leader_type
+        usergroup.save()

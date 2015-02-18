@@ -28,9 +28,38 @@ class UserTeam(models.Model):
                           u'Leader' if self.is_leader else u''])
 
 
-# # Group
-# class Group(models.Model):
-#     season = models.ForeignKey(Season, null=False)
+# Group
+class BuddyGroup(models.Model):
+    season = models.ForeignKey(Season, null=False)
+    name = models.CharField(max_length=64, null=False)
+
+    def __unicode__(self):
+        return u'%s - %s' % (self.season, self.name)
+
+
+class UserGroup(models.Model):
+    """Stores group information of Korean buddies"""
+    NOTHING = 0
+    LEADER = 1
+    SUBLEADER = 2
+    LEADER_CHOICES = (
+        (NOTHING, ''),
+        (LEADER, '조장'),
+        (SUBLEADER, '부조장'),
+    )
+
+    group = models.ForeignKey(BuddyGroup, null=False)
+    user = models.ForeignKey(User, null=False)
+    leader_type = models.IntegerField(choices=LEADER_CHOICES, default=0, null=False)
+
+    def __unicode__(self):
+        return u' '.join([unicode(self.group.season),
+                          u'-', self.user.profile.korean_name,
+                          u'-', unicode(self.group),
+                          dict(self.LEADER_CHOICES)[self.leader_type]])
+
+
+
 # # Report
 # class Question(models.Model):
 #     question = models.CharField(max_length=256)
