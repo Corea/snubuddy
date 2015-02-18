@@ -8,6 +8,11 @@ table th, table td {
     vertical-align: middle !important;
 }
 
+table tr.korean {
+    background: #eee;
+    font-weight: bold;
+}
+
 #BuddyTable tfoot td {
     padding: 1em;
     text-align: right;

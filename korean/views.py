@@ -37,6 +37,22 @@ def korean_list(request):
 
 @login_required
 @group_required('Admin')
+def full_list(request):
+    groups = korean_queries.get_group_list()
+    infos = []
+    for group in groups:
+        usergroups = korean_queries.get_usergroups_by_group(group)
+        inner_info = map(lambda x: [x, matching_queries.get_personal_buddies(x.user)],
+                         usergroups)
+        infos.append([group, inner_info])
+
+    return render(request, 'korean/full_list.html', {
+        'infos': infos
+    })
+
+
+@login_required
+@group_required('Admin')
 def make_member(request):
     if request.method != 'POST':
         return redirect(korean_list)
@@ -79,6 +95,3 @@ def make_member(request):
         pass
 
     return redirect(korean_list)
-
-    # return HttpResponse(map(lambda x: x + " ", request.POST.getlist('checked_ids')))
-

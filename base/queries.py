@@ -11,3 +11,7 @@ def get_this_season():
 
 def get_user(user_id):
     return User.objects.get(id=user_id)
+
+
+def is_korean(user):
+    return user.groups.filter(name='Korean').exists()

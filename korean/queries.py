@@ -6,12 +6,13 @@ from korean.models import Team, UserTeam, BuddyGroup, UserGroup
 from base import queries as base_queries
 
 
-def get_korean_list(sorted_birth=False):
-    users = Group.objects.get(name='Korean').user_set.all()
-    if sorted_birth:
-        users = sorted(users, 
-            key=lambda x: (x.profile.birth.month, x.profile.birth.day))
+def get_korean_list(sort_option=''):
+    sort_key = (lambda x: x.profile.korean_name)
+    if sort_option == 'birth':
+        sort_key = (lambda x: (x.profile.birth.month, x.profile.birth.day))
 
+    users = Group.objects.get(name='Korean').user_set.all()
+    users = sorted(users, key=sort_key)
     return users
 
 
@@ -66,6 +67,10 @@ def get_group(group_id):
 
 def get_group_list():
     return BuddyGroup.objects.filter(season=base_queries.get_this_season())
+
+
+def get_usergroups_by_group(group):
+    return UserGroup.objects.filter(group=group)
 
 
 def get_usergroup_by_user(user):

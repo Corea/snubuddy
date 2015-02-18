@@ -1,0 +1,38 @@
+{% extends "korean/base.html" %}
+
+{% load filters %}
+
+{% block content %}
+<div class="container">
+    <h1 class="page-header">Full Buddy List</h1>
+    {% for group, inner_info in infos %}
+    <h2>{{ group.name }}</h2>
+    <table class="table table-condensed table-center">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Birth</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for usergroup, personal_buddies in inner_info %}
+            <tr {% if usergroup.user|has_group:"Korean" %}class="korean"{% endif %}>
+                <td>{{ usergroup.user.first_name }} {{ usergroup.user.last_name }}</td>
+                <td>{{ usergroup.user.profile.get_gender_display }}</td>
+                <td>{{ usergroup.user.profile.birth|date:"m/d" }}</td>
+            </tr>
+            {% for user in personal_buddies %}
+            <tr {% if user|has_group:"Korean" %}class="korean"{% endif %}>
+                <td>{{ user.first_name }} {{ user.last_name }}</td>
+                <td>{{ user.profile.get_gender_display }}</td>
+                <td>{{ user.profile.birth|date:"m/d" }}</td>
+            </tr>
+            {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endfor %}
+    </div>
+{% endblock %}

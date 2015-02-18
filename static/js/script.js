@@ -34,4 +34,10 @@ $(document).ready(function() {
     if ($('.languageRemoveButton').length > 0) {
         $('.languageRemoveButton').click(LanguageRemove);
     }
+
+    if ($('#KoreanTable').length > 0) {
+        $('#KoreanTable').parents('form').submit(function() {
+            return confirm('Really?');
+        });
+    }
 });
