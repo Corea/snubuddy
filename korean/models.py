@@ -1,21 +1,33 @@
+# -*- coding: utf-8 -*-
+
 from django.db import models
+from django.contrib.auth.models import User
+
+from base.models import Season
 
 
 # Team
-# class Team(models.Model):
-#     """Stores team information of Korean buddies"""
-#     season = models.ForeignKey(Season, null=False)
-#     user = models.ForeignKey(User, null=False)
-#     name = models.CharField(max_length=64, null=False)
-#     is_leader = models.BooleanField(default=False)
-# 
-#     def __unicode__(self):
-#         return u' '.join([unicode(self.season),
-#                           u'-', self.user.first_name,
-#                           u'-', unicode(self.team),
-#                           u'Leader' if self.is_leader else u''])
-# 
-# 
+class Team(models.Model):
+    season = models.ForeignKey(Season, null=False)
+    name = models.CharField(max_length=64, null=False)
+
+    def __unicode__(self):
+        return u'%s - %s' % (self.season, self.name)
+
+
+class UserTeam(models.Model):
+    """Stores team information of Korean buddies"""
+    team = models.ForeignKey(Team, null=False)
+    user = models.ForeignKey(User, null=False)
+    is_leader = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return u' '.join([unicode(self.team.season),
+                          u'-', self.user.profile.korean_name,
+                          u'-', unicode(self.team),
+                          u'Leader' if self.is_leader else u''])
+
+
 # # Group
 # class Group(models.Model):
 #     season = models.ForeignKey(Season, null=False)

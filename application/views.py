@@ -23,8 +23,8 @@ def index(request):
     return redirect('/')
 
 
-@group_required('Admin')
 @login_required
+@group_required('Admin')
 def list(request):
     application_infos = []
     application_list = ApplicationForeigner.objects.filter(
@@ -40,8 +40,8 @@ def list(request):
     })
 
 
-@group_required('Admin')
 @login_required
+@group_required('Admin')
 def accept(request, application_id):
     application = ApplicationForeigner.objects.get(id=application_id)
     user = application.user
@@ -50,8 +50,8 @@ def accept(request, application_id):
     return redirect(list)
 
 
-@group_required('Guest')
 @login_required
+@group_required('Guest')
 def register(request):
     form = ApplicationForeignerForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
@@ -74,7 +74,7 @@ def register(request):
     })
 
 
-@group_required('Guest')
 @login_required
+@group_required('Guest')
 def register_finish(request):
     return render(request, 'application/register_finish.html', {})

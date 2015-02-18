@@ -1,3 +1,10 @@
-from django.contrib import admin
+# -*- coding: utf-8 -*-
 
-# Register your models here.
+from django.contrib import admin
+from korean.models import (
+    Team, UserTeam
+)
+
+
+admin.site.register(Team)
+admin.site.register(UserTeam)

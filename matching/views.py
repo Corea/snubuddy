@@ -12,12 +12,19 @@ from matching.models import Matching, MatchingLanguage, MatchingConnection
 from matching.forms import MatchingKoreanForm, MatchingForeignerForm
 
 
+def get_count_matched_buddies(matching):
+    return MatchingConnection.objects.filter(korean_matching=matching).count()
+
+
 @login_required
 @reverse_group_required('Guest')
 def list(request):
     matching_list = Matching.objects.filter(
         user__groups__name='Korean',
         season=get_this_season()).order_by('id')
+
+    matching_list = sorted(matching_list,
+            key=lambda x: (get_count_matched_buddies(x) / x.max_buddy_number))
 
     return render(request, 'matching/list.html', {
         'matching_list': matching_list
