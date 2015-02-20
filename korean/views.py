@@ -27,7 +27,7 @@ def korean_list(request):
         userteam = korean_queries.get_userteam_by_user(user)
         usergroup = korean_queries.get_usergroup_by_user(user)
         infos.append([user, exist, userteam, usergroup])
-    
+
     return render(request, 'korean/korean_list.html', {
         'infos': infos,
         'teams': korean_queries.get_team_list(),
@@ -42,8 +42,8 @@ def full_list(request):
     infos = []
     for group in groups:
         usergroups = korean_queries.get_usergroups_by_group(group)
-        inner_info = map(lambda x: [x, matching_queries.get_personal_buddies(x.user)],
-                         usergroups)
+        inner_info = [[x, matching_queries.get_personal_buddies_by_user(x.user)]
+                      for x in usergroups]
         infos.append([group, inner_info])
 
     return render(request, 'korean/full_list.html', {

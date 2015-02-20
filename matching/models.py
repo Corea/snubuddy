@@ -22,7 +22,7 @@ class Matching(models.Model):
     interest = models.CharField(max_length=128, null=False)
     self_introduction = models.TextField(null=False)
     comment = models.TextField(null=False)
-    
+
     gender_preference = models.CharField(
         max_length=1, choices=GENDER_CHOICES, null=True)
     max_buddy_number = models.IntegerField(null=True)
@@ -35,7 +35,7 @@ class MatchingLanguage(models.Model):
     matching = models.ForeignKey(Matching)
     language = models.ForeignKey(Language)
     level = models.IntegerField(null=False)
-    
+
     def __unicode__(self):
         return u'%s %s %s' % (self.matching, self.language, self.level)
 

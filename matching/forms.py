@@ -51,7 +51,6 @@ class MatchingKoreanForm(ModelForm):
         return valid
 
 
-
 class MatchingForeignerForm(ModelForm):
     language = forms.Field(widget=LanguageWidget, required=False)
 
@@ -82,4 +81,3 @@ class MatchingForeignerForm(ModelForm):
             return False
 
         return valid
-

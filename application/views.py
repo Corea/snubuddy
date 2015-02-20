@@ -34,7 +34,7 @@ def list(request):
             user=application.user,
             season=get_this_season()).exists()
         application_infos.append([application, exist])
- 
+
     return render(request, 'application/list.html', {
         'application_infos': application_infos
     })
@@ -67,7 +67,7 @@ def register(request):
     application_exist = ApplicationForeigner.objects.filter(
         user=request.user,
         season=get_this_season()).count() > 0
-        
+
     return render(request, 'application/register.html', {
         'form': form,
         'exists': application_exist

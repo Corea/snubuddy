@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 
 from base.queries import get_this_season
@@ -11,68 +11,47 @@ from base.models import Language
 from matching.models import Matching, MatchingLanguage, MatchingConnection
 from matching.forms import MatchingKoreanForm, MatchingForeignerForm
 
-
-def get_count_matched_buddies(matching):
-    return MatchingConnection.objects.filter(korean_matching=matching).count()
+from base import queries as base_queries
+from matching import queries as matching_queries
 
 
 @login_required
 @reverse_group_required('Guest')
 def list(request):
-    matching_list = Matching.objects.filter(
-        user__groups__name='Korean',
-        season=get_this_season()).order_by('id')
-
-    matching_list = sorted(matching_list,
-            key=lambda x: (get_count_matched_buddies(x) / x.max_buddy_number))
+    sort_ftn = lambda x: (matching_queries.count_matched_buddies(x) /
+                          x.max_buddy_number)
+    matching_list = matching_queries.get_korean_matching_list()
+    matching_list = sorted(matching_list, key=sort_ftn)
 
     return render(request, 'matching/list.html', {
         'matching_list': matching_list
     })
 
 
-def remove_prior_matching(request):
-    matching_list = Matching.objects.filter(
-        user=request.user,
-        season=get_this_season())
-    for matching in matching_list:
-        MatchingLanguage.objects.filter(matching=matching).delete()
-        matching_connections = MatchingConnection.objects.filter(
-            korean_matching=matching)
-        for item in matching_connections:
-            item.foreign_matching.delete()
-            item.delete()
-        MatchingConnection.objects.filter(foreign_matching=matching).delete()
-        matching.delete()
-    
-
 @login_required
 @group_required('Korean')
 def register(request):
     form = MatchingKoreanForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
-        remove_prior_matching(request)
+        matching_queries.delete_matching_by_user(request.user)
 
         matching = form.save(commit=False)
         matching.user = request.user
         matching.season = get_this_season()
         matching.save()
 
-        languages = form.data.getlist('language[]')
-        language_levels = form.data.getlist('language_level[]')
+        languages = map(int, form.data.getlist('language[]'))
+        language_levels = map(int, form.data.getlist('language_level[]'))
         for i in xrange(len(languages)):
-            language = Language.objects.get(id=int(languages[i]))
+            language = base_queries.get_language(languages[i])
             matching_language = MatchingLanguage.objects.create(
                 matching=matching,
                 language=language,
-                level=int(language_levels[i])
-            )
+                level=language_levels[i])
 
-        return redirect(view, matching_id=matching.id)
+        return redirect(view, id=matching.id)
 
-    matching_exist = Matching.objects.filter(
-        user=request.user,
-        season=get_this_season()).count() > 0
+    matching_exist = matching_queries.has_matching(request.user)
 
     return render(request, 'matching/register.html', {
         'form': form,
@@ -82,19 +61,12 @@ def register(request):
 
 @login_required
 @reverse_group_required('Guest')
-def view(request, matching_id):
-    try:
-        matching = Matching.objects.get(id=matching_id)
-    except:
-        return redirect(list)
-    languages = MatchingLanguage.objects.filter(matching=matching)
+def view(request, id):
+    matching = get_object_or_404(Matching, id=id)
 
-    foreigners = []
-    for item in MatchingConnection.objects.filter(korean_matching=matching):
-        foreigners.append([
-            item.foreign_matching,
-            MatchingLanguage.objects.filter(matching=item.foreign_matching)
-        ])
+    languages = MatchingLanguage.objects.filter(matching=matching)
+    foreigners = [[x, MatchingLanguage.objects.filter(matching=x)]
+                  for x in matching_queries.get_personal_buddies(matching)]
 
     return render(request, 'matching/view.html', {
         'matching': matching,
@@ -106,11 +78,8 @@ def view(request, matching_id):
 @login_required
 @new_buddy_required
 @group_required('Foreigner')
-def register_foreigner(request, matching_id):
-    try:
-        korean_matching = Matching.objects.get(id=matching_id)
-    except:
-        return redirect(list)
+def register_foreigner(request, id):
+    matching = get_object_or_404(Matching, id=id)
 
     matching_count = MatchingConnection.objects.filter(
         korean_matching=korean_matching).count()
@@ -119,9 +88,9 @@ def register_foreigner(request, matching_id):
         return redirect(register_full)
 
     form = MatchingForeignerForm(request.POST or None)
-    
+
     if request.method == 'POST' and form.is_valid():
-        remove_prior_matching(request)
+        matching_queries.delete_matching_by_user(request.user)
 
         matching = form.save(commit=False)
         matching.user = request.user
@@ -132,21 +101,18 @@ def register_foreigner(request, matching_id):
             korean_matching=korean_matching,
             foreign_matching=matching)
 
-        languages = form.data.getlist('language[]')
-        language_levels = form.data.getlist('language_level[]')
+        languages = map(int, form.data.getlist('language[]'))
+        language_levels = map(int, form.data.getlist('language_level[]'))
         for i in xrange(len(languages)):
-            language = Language.objects.get(id=int(languages[i]))
+            language = base_queries.get_language(languages[i])
             matching_language = MatchingLanguage.objects.create(
                 matching=matching,
                 language=language,
-                level=int(language_levels[i])
-            )
+                level=language_levels[i])
 
-        return redirect(view, matching_id=matching_id)
-        
-    matching_exist = Matching.objects.filter(
-        user=request.user,
-        season=get_this_season()).count() > 0
+        return redirect(view, id=id)
+
+    matching_exist = matching_queries.has_matching(request.user)
 
     return render(request, 'matching/register_foreigner.html', {
         'matching': korean_matching,
@@ -163,12 +129,8 @@ def register_full(request):
 
 
 @login_required
-def delete(request, matching_id):
-    try:
-        matching = Matching.objects.get(id=matching_id)
-    except:
-        return redirect(list)
-
+def delete(request, id):
+    matching = get_object_or_404(Matching, id=id)
     if request.user == matching.user:
         return render(request, 'matching/delete.html', {
             'matching': matching
@@ -178,20 +140,9 @@ def delete(request, matching_id):
 
 
 @login_required
-def delete_bye(request, matching_id):
-    try:
-        matching = Matching.objects.get(id=matching_id)
-    except:
-        return redirect(list)
-
+def delete_bye(request, id):
+    matching = get_object_or_404(Matching, id=id)
     if request.user == matching.user:
-        MatchingLanguage.objects.filter(matching=matching).delete()
-        matching_connections = MatchingConnection.objects.filter(
-            korean_matching=matching)
-        for item in matching_connections:
-            item.foreign_matching.delete()
-            item.delete()
-        MatchingConnection.objects.filter(foreign_matching=matching).delete()
-        matching.delete()
+        matching_queries.delete_matching(matching)
 
     return redirect(list)

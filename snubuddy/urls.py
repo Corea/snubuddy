@@ -7,7 +7,8 @@ from matching import views as matching_views
 from korean import views as korean_views
 
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     url(r'^admin/', include(admin.site.urls)),
 
     url(r'^$', base_views.index, name='index'),
@@ -44,19 +45,19 @@ urlpatterns = patterns('',
     url(r'^matching/register/$',
         matching_views.register,
         name='matching_register'),
-    url(r'^matching/view/(?P<matching_id>\d+)/$',
+    url(r'^matching/view/(?P<id>\d+)/$',
         matching_views.view,
         name='matching_view'),
-    url(r'^matching/register/(?P<matching_id>\d+)/$',
+    url(r'^matching/register/(?P<id>\d+)/$',
         matching_views.register_foreigner,
         name='matching_register_foreigner'),
     url(r'^matching/register_full/$',
         matching_views.register_full,
         name='matching_register_full'),
-    url(r'^matching/delete/(?P<matching_id>\d+)/$',
+    url(r'^matching/delete/(?P<id>\d+)/$',
         matching_views.delete,
         name='matching_delete'),
-    url(r'^matching/delete/bye/(?P<matching_id>\d+)/$',
+    url(r'^matching/delete/bye/(?P<id>\d+)/$',
         matching_views.delete_bye,
         name='matching_delete_bye'),
 
@@ -72,7 +73,4 @@ urlpatterns = patterns('',
     url(r'^korean/make_member/$',
         korean_views.make_member,
         name='korean_make_member'),
-    # url(r'^personal/$', base_views.personal_list, name='personal_list'),
-    # url(r'^personal/get_photo/(\d+)/$', base_views.personal_get_photo, name='personal_get_photo'),
-    # url(r'^personal/add/$', base_views.personal_add, name='personal_add'),
 )

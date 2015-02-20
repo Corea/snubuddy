@@ -50,7 +50,8 @@ class UserGroup(models.Model):
 
     group = models.ForeignKey(BuddyGroup, null=False)
     user = models.ForeignKey(User, null=False)
-    leader_type = models.IntegerField(choices=LEADER_CHOICES, default=0, null=False)
+    leader_type = models.IntegerField(
+        choices=LEADER_CHOICES, default=0, null=False)
 
     def __unicode__(self):
         return u' '.join([unicode(self.group.season),
@@ -65,27 +66,27 @@ class UserGroup(models.Model):
 #     question = models.CharField(max_length=256)
 #     created_on = models.DateTimeField(auto_now_add=True)
 #     modified_on = models.DateTimeField(auto_now=True)
-# 
+#
 #     def __unicode__(self):
 #         return u'%s' % self.question
-# 
-# 
+#
+#
 # #class Report(models.Model):
 # #    season = models.ForeignKey(Season, null=False)
 # #    month = models.IntegerField(null=False)
 # #    deadline = models.DateTimeField(null=False)
 # #    created_on = models.DateTimeField(auto_now_add=True)
 # #    modified_on = models.DateTimeField(auto_now=True)
-# 
-# 
+#
+#
 # #class PersonalReport(models.Model):
 # #    report = models.ForeignKey(Report, null=False)
 # #    user = models.ForeignKey(User, null=False)
 # #    foreign_buddy_name = models.CharField(max_length=64)
 # #    created_on = models.DateTimeField(auto_now_add=True)
 # #    modified_on = models.DateTimeField(auto_now=True)
-# 
-# 
+#
+#
 # class PersonalActivity(models.Model):
 #     # personal_report = models.ForeignKey(PersonalReport, null=False)
 #     user = models.ForeignKey(User, null=False)
@@ -95,14 +96,14 @@ class UserGroup(models.Model):
 #     photo = models.FileField(max_length=1024, upload_to='upload/image/', blank=True)
 #     created_on = models.DateTimeField(auto_now_add=True)
 #     modified_on = models.DateTimeField(auto_now=True)
-#     
+#
 #     def __unicode__(self):
 #         return u' '.join([self.user.first_name,
 #                           u'-', unicode(self.activity_date),
 #                           u'-', self.remarks,
 #                           u'-', self.particulars])
-# 
-# 
+#
+#
 # class PersonalEvaluation(models.Model):
 #     # personal_report = models.ForeignKey(PersonalReport, null=False)
 #     user = models.ForeignKey(User, null=False)
