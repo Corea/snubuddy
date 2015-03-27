@@ -76,7 +76,7 @@ class PersonalEvent(models.Model):
     user = models.ForeignKey(User, null=False)
     season = models.ForeignKey(Season, null=False)
     title = models.CharField(max_length=256, null=False)
-    start_date = models.DateTimeField(null=False)
+    start_date = models.DateField(null=False)
     place = models.CharField(max_length=256, null=False)
     place_type = models.IntegerField(choices=PLACE_CHOICES, null=False)
     photo = models.FileField(
@@ -84,7 +84,7 @@ class PersonalEvent(models.Model):
 
     def __unicode__(self):
         arr = [self.user.profile.korean_name,
-               self.start_date, 
+               self.start_date,
                dict(self.PLACE_CHOICES[self.place_type]),
                unicode(self.place),
                unicode(self.name)]
@@ -106,13 +106,13 @@ class GroupEvent(models.Model):
 
     group = models.ForeignKey(BuddyGroup, null=False)
     title = models.CharField(max_length=256, null=False)
-    start_date = models.DateTimeField(null=False)
+    start_date = models.DateField(null=False)
     place = models.CharField(max_length=256, null=False)
     place_type = models.IntegerField(choices=PLACE_CHOICES, null=False)
 
     def __unicode__(self):
         arr = [self.group,
-               self.start_date, 
+               self.start_date,
                dict(self.PLACE_CHOICES[self.place_type]),
                unicode(self.place),
                unicode(self.name)]
@@ -125,17 +125,17 @@ class GroupAttend(models.Model):
     user = models.ForeignKey(User, null=False)
 
     def __unicode__(self):
-        return u' '.join(self.user.profile.korean_name, self.event)
+        return u' '.join([self.user.profile.korean_name, self.event])
 
 
 class TeamEvent(models.Model):
     team = models.ForeignKey(Team, null=False)
     title = models.CharField(max_length=256, null=False)
-    start_date = models.DateTimeField(null=False)
+    start_date = models.DateField(null=False)
 
     def __unicode__(self):
         arr = [self.team,
-               self.start_date, 
+               self.start_date,
                unicode(self.name)]
 
         return u'/'.join(arr)
@@ -144,11 +144,11 @@ class TeamEvent(models.Model):
 class TeamAttend(models.Model):
     event = models.ForeignKey(TeamEvent, null=False)
     user = models.ForeignKey(User, null=False)
+    score = models.IntegerField(null=False)
 
     def __unicode__(self):
-        return u' '.join(self.user.profile.korean_name, self.event)
-
-
+        return u' '.join([self.user.profile.korean_name,
+                          self.event, unicode(self.score)])
 
 
 # # Report
@@ -175,23 +175,6 @@ class TeamAttend(models.Model):
 # #    foreign_buddy_name = models.CharField(max_length=64)
 # #    created_on = models.DateTimeField(auto_now_add=True)
 # #    modified_on = models.DateTimeField(auto_now=True)
-#
-#
-# class PersonalActivity(models.Model):
-#     # personal_report = models.ForeignKey(PersonalReport, null=False)
-#     user = models.ForeignKey(User, null=False)
-#     particulars = models.CharField(max_length=256)
-#     activity_date = models.DateField()
-#     remarks = models.CharField(max_length=256)
-#     photo = models.FileField(max_length=1024, upload_to='upload/image/', blank=True)
-#     created_on = models.DateTimeField(auto_now_add=True)
-#     modified_on = models.DateTimeField(auto_now=True)
-#
-#     def __unicode__(self):
-#         return u' '.join([self.user.first_name,
-#                           u'-', unicode(self.activity_date),
-#                           u'-', self.remarks,
-#                           u'-', self.particulars])
 #
 #
 # class PersonalEvaluation(models.Model):

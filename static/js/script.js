@@ -40,4 +40,16 @@ $(document).ready(function() {
             return confirm('Really?');
         });
     }
+
+    if ($('a.confirm-required').length > 0) {
+        $('a.confirm-required').click(function() {
+            return confirm('Really?');
+        });
+    }
+
+    if ($('#KoreanTable').length > 0) {
+        $('#KoreanTable').parents('form').submit(function() {
+            return confirm('Really?');
+        });
+    }
 });

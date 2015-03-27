@@ -21,7 +21,7 @@ def index(request):
 
 
 def register(request):
-    form = RegistrationForm(data=request.POST or None)
+    form = RegistrationForm(request.POST or None)
 
     if request.method == 'POST' and form.is_valid():
         form.save()
@@ -39,7 +39,7 @@ def register(request):
 @login_required
 def setting(request):
     user = request.user
-    form = SettingsForm(data=request.POST or None,
+    form = SettingsForm(request.POST or None,
                         initial={'first_name': user.first_name,
                                  'last_name': user.last_name,
                                  'email': user.email,

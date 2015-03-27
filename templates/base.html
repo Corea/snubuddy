@@ -44,7 +44,7 @@
 
                         {% if not user|has_group:"Guest" %}
                         <li id="NavMatching" class="dropdown">
-                            <a href="/matching/" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Buddy Matching <span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Matching <span class="caret"></span></a>
 
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="/matching/">Matching List</a></li>
@@ -55,10 +55,10 @@
 
                         {% if user|has_group:"Korean" %}
                         <li id="NavKorean" class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Korean Buddy <span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Korean <span class="caret"></span></a>
 
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="/evaluation/">평가 상황</a></li>
+                                <li><a href="/evaluation/">내 활동 상황</a></li>
                                 <li><a href="/evaluation/personal_activity/">개인 활동 추가</a></li>
 
                                 {% if user|is_group_leader %}
@@ -82,7 +82,6 @@
 
                     <ul class="nav navbar-nav navbar-right">
                         {% if user.is_authenticated %}
-                        <li><p class="navbar-text">{{ user.first_name }} {{ user.last_name }} ({{ user.username }})</p></li>
                         <li id="NavSetting"><a href="/account/setting/">Setting</a></li>
                         <li><a href="/account/logout/">Logout</a></li>
                         {% else %}
@@ -90,6 +89,10 @@
                         <li id="NavRegister"><a href="/account/register/">Register</a></li>
                         {% endif %}
                     </ul>
+
+                    {% if user.is_authenticated %}
+                    <p class="navbar-text navbar-right">{{ user.first_name }} {{ user.last_name }}</p>
+                    {% endif %}
                 </div><!--/.nav-collapse -->
 
             </div>

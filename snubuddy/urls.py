@@ -17,7 +17,6 @@ urlpatterns = patterns(
     url(r'^upload/(?P<path>.*)$', 'django.views.static.serve', {
             'document_root': settings.MEDIA_ROOT}),
 
-
     url(r'^$', base_views.index, name='index'),
     url(r'^account/register/$',
         base_views.register,
@@ -81,16 +80,31 @@ urlpatterns = patterns(
     url(r'^evaluation/$',
         korean_views.evaluation_status,
         name='evaluation_status'),
+
     url(r'^evaluation/personal_activity/$',
         korean_views.add_personal_activity,
         name='evaluation_add_personal_activity'),
-    url(r'^evaluation/personal_activity/remove/(\d+)/$',
-        korean_views.remove_personal_activity,
-        name='evaluation_remove_personal_activity'),
     url(r'^evaluation/group_activity/$',
         korean_views.add_group_activity,
         name='evaluation_add_group_activity'),
     url(r'^evaluation/team_activity/$',
         korean_views.add_team_activity,
         name='evaluation_add_team_activity'),
+
+    url(r'^evaluation/group_activity/(\d+)/$',
+        korean_views.modify_group_activity,
+        name='evaluation_modify_group_activity'),
+    url(r'^evaluation/team_activity/(\d+)/$',
+        korean_views.modify_team_activity,
+        name='evaluation_modify_team_activity'),
+
+    url(r'^evaluation/personal_activity/remove/(\d+)/$',
+        korean_views.remove_personal_activity,
+        name='evaluation_remove_personal_activity'),
+    url(r'^evaluation/group_activity/remove/(\d+)/$',
+        korean_views.remove_group_activity,
+        name='evaluation_remove_group_activity'),
+    url(r'^evaluation/team_activity/remove/(\d+)/$',
+        korean_views.remove_team_activity,
+        name='evaluation_remove_team_activity'),
 )

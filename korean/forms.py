@@ -26,7 +26,8 @@ class PersonalEventForm(ModelForm):
     def is_valid(self):
         valid = super(PersonalEventForm, self).is_valid()
 
-        if self.cleaned_data['start_date'].date() > date.today():
+        if 'start_date' in self.cleaned_data and \
+                self.cleaned_data['start_date'] > date.today():
             self.add_error('start_date', 'Please make sure the date.')
             valid = False
 
@@ -50,10 +51,23 @@ class GroupEventForm(ModelForm):
             'start_date': u'시작 날짜만 기입, ex) 2015-03-03',
         }
 
+    def is_valid(self):
+        valid = super(GroupEventForm, self).is_valid()
+
+        if 'start_date' in self.cleaned_data and \
+                self.cleaned_data['start_date'] > date.today():
+            self.add_error('start_date', 'Please make sure the date.')
+            valid = False
+
+        if not valid:
+            return valid
+
+        return True
+
 
 class TeamEventForm(ModelForm):
     class Meta:
-        model = GroupEvent
+        model = TeamEvent
         fields = ('title', 'start_date')
         labels = {
             'title': u'Particulars',
@@ -62,3 +76,16 @@ class TeamEventForm(ModelForm):
         help_texts = {
             'start_date': u'시작 날짜만 기입, ex) 2015-03-03',
         }
+
+    def is_valid(self):
+        valid = super(TeamEventForm, self).is_valid()
+
+        if 'start_date' in self.cleaned_data and \
+                self.cleaned_data['start_date'] > date.today():
+            self.add_error('start_date', 'Please make sure the date.')
+            valid = False
+
+        if not valid:
+            return valid
+
+        return True

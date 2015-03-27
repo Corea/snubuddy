@@ -17,14 +17,6 @@ def get_korean_list(sort_option=''):
 
 
 # Team
-def get_team(team_id):
-    return Team.objects.get(id=team_id)
-
-
-def get_team_list():
-    return Team.objects.filter(season=base_queries.get_this_season())
-
-
 def get_userteam_by_user(user):
     try:
         return UserTeam.objects.get(
@@ -61,18 +53,6 @@ def make_team_leader(user):
 
 
 # Group
-def get_group(group_id):
-    return BuddyGroup.objects.get(id=group_id)
-
-
-def get_group_list():
-    return BuddyGroup.objects.filter(season=base_queries.get_this_season())
-
-
-def get_usergroups_by_group(group):
-    return UserGroup.objects.filter(group=group)
-
-
 def get_usergroup_by_user(user):
     try:
         return UserGroup.objects.get(
@@ -80,6 +60,15 @@ def get_usergroup_by_user(user):
             group__season=base_queries.get_this_season())
     except:
         return None
+
+
+def get_buddygroup_by_user(user):
+    usergroup = get_usergroup_by_user(user)
+    return usergroup.group if usergroup is not None else None
+
+
+def get_member_by_buddygroup(group):
+    return map(lambda x: x.user, UserGroup.objects.filter(group=group))
 
 
 def make_group_member(user, group):
