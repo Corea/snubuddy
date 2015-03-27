@@ -60,6 +60,96 @@ class UserGroup(models.Model):
                           dict(self.LEADER_CHOICES)[self.leader_type]])
 
 
+# Activity
+class PersonalEvent(models.Model):
+    CAMPUS = 0
+    NEAR_CAMPUS = 1
+    METROPOLITAN_AREA = 2
+    OTHER = 3
+    PLACE_CHOICES = (
+        (CAMPUS, '교내'),
+        (NEAR_CAMPUS, '학교 근처'),
+        (METROPOLITAN_AREA, '수도권'),
+        (OTHER, '수도권 외'),
+    )
+
+    user = models.ForeignKey(User, null=False)
+    season = models.ForeignKey(Season, null=False)
+    title = models.CharField(max_length=256, null=False)
+    start_date = models.DateTimeField(null=False)
+    place = models.CharField(max_length=256, null=False)
+    place_type = models.IntegerField(choices=PLACE_CHOICES, null=False)
+    photo = models.FileField(
+        max_length=1024, upload_to='image/', null=False)
+
+    def __unicode__(self):
+        arr = [self.user.profile.korean_name,
+               self.start_date, 
+               dict(self.PLACE_CHOICES[self.place_type]),
+               unicode(self.place),
+               unicode(self.name)]
+
+        return u'/'.join(arr)
+
+
+class GroupEvent(models.Model):
+    CAMPUS = 0
+    NEAR_CAMPUS = 1
+    METROPOLITAN_AREA = 2
+    OTHER = 3
+    PLACE_CHOICES = (
+        (CAMPUS, '교내'),
+        (NEAR_CAMPUS, '학교 근처'),
+        (METROPOLITAN_AREA, '수도권'),
+        (OTHER, '수도권 외'),
+    )
+
+    group = models.ForeignKey(BuddyGroup, null=False)
+    title = models.CharField(max_length=256, null=False)
+    start_date = models.DateTimeField(null=False)
+    place = models.CharField(max_length=256, null=False)
+    place_type = models.IntegerField(choices=PLACE_CHOICES, null=False)
+
+    def __unicode__(self):
+        arr = [self.group,
+               self.start_date, 
+               dict(self.PLACE_CHOICES[self.place_type]),
+               unicode(self.place),
+               unicode(self.name)]
+
+        return u'/'.join(arr)
+
+
+class GroupAttend(models.Model):
+    event = models.ForeignKey(GroupEvent, null=False)
+    user = models.ForeignKey(User, null=False)
+
+    def __unicode__(self):
+        return u' '.join(self.user.profile.korean_name, self.event)
+
+
+class TeamEvent(models.Model):
+    team = models.ForeignKey(Team, null=False)
+    title = models.CharField(max_length=256, null=False)
+    start_date = models.DateTimeField(null=False)
+
+    def __unicode__(self):
+        arr = [self.team,
+               self.start_date, 
+               unicode(self.name)]
+
+        return u'/'.join(arr)
+
+
+class TeamAttend(models.Model):
+    event = models.ForeignKey(TeamEvent, null=False)
+    user = models.ForeignKey(User, null=False)
+
+    def __unicode__(self):
+        return u' '.join(self.user.profile.korean_name, self.event)
+
+
+
 
 # # Report
 # class Question(models.Model):

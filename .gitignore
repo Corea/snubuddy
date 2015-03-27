@@ -62,3 +62,6 @@ setting_db.sql
 
 # Static files
 static_collect/
+
+# Uploaded files
+upload/

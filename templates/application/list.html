@@ -17,25 +17,27 @@
                 <th>Facebook Info</th>
                 <th>Returning</th>
                 <th>Matching</th>
+                <th>Major</th>
                 <th>Action</th>
             </tr>
         </thead>
 
         <tbody>
-        {% for item in application_infos %}
+        {% for application, matching in application_infos %}
         <tr>
             <td>{{ forloop.counter }}</td>
-            <td>{{ item.0.user.first_name }} {{ item.0.user.last_name }}</td>
-            <td>{{ item.0.user.email }}</td>
-            <td>{{ item.0.user.profile.get_gender_display }}</td>
-            <td>{{ item.0.user.profile.birth|date:"y/m/d" }}</td>
-            <td>{{ item.0.user.profile.country }}</td>
-            <td>{{ item.0.snu_id }}</td>
-            <td title="{{item.0.fb_name}}">{{ item.0.fb_email }}</td>
-            <td>{% if item.0.returning %}O{% endif %}</td>
-            <td>{% if item.1 %}O{% endif %}</td>
+            <td>{{ application.user.first_name }} {{ application.user.last_name }}</td>
+            <td>{{ application.user.email }}</td>
+            <td>{{ application.user.profile.get_gender_display }}</td>
+            <td>{{ application.user.profile.birth|date:"y/m/d" }}</td>
+            <td>{{ application.user.profile.country }}</td>
+            <td>{{ application.snu_id }}</td>
+            <td title="{{application.fb_name}}">{{ application.fb_email }}</td>
+            <td>{% if application.returning %}O{% endif %}</td>
+            <td>{% if matching %}O{% endif %}</td>
+            <td>{{ matching.major }}</td>
             <td>
-                {% if not item.0.user|has_group:"Foreigner" %}<a href="/application/accept/{{ item.0.id }}/" class="btn btn-sm btn-primary">Accept</a>{% endif %}
+                {% if not application.user|has_group:"Foreigner" %}<a href="/application/accept/{{ application.id }}/" class="btn btn-sm btn-primary">Accept</a>{% endif %}
             </td>
         </tr>
         {% endfor %}

@@ -1,0 +1,34 @@
+{% extends "evaluation/base.html" %}
+
+{% load filters %}
+
+{% block content %}
+<div class="container">
+    <h1 class="page-header">Event List</h1>
+
+    <h2>Personal Activity</h2>
+    <table class="table table-condensed table-center">
+        <thead>
+            <tr>
+                <th>Particulars</th>
+                <th>Date</th>
+                <th>Remarks</th>
+                <th>Photo</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for event in personal_events %}
+        <tr>
+            <td>{{ event.title }}</td>
+            <td>{{ event.start_date|date:"y/m/d" }}</td>
+            <td>{{ event.get_place_type_display }} ({{ event.place }})</td>
+            <td><a href="{{ MEDIA_URL }}{{ event.photo }}">Photo</a></td>
+            <td><a href="/evaluation/personal_activity/remove/{{ event.id }}/">Remove</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

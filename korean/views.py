@@ -1,25 +1,103 @@
 # -*- coding: utf-8 -*-
 
-from django.shortcuts import render, redirect
+from datetime import datetime
+
+from itertools import groupby
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden
 
+from base.templatetags.filters import is_team_leader, is_group_leader
+
+from application.models import ApplicationForeigner
+from korean.models import (
+    PersonalEvent, GroupEvent, GroupAttend, TeamEvent, TeamAttend
+)
 from base.decorators import group_required
 
 from base import queries as base_queries
 from matching import queries as matching_queries
 from korean import queries as korean_queries
+from korean.forms import PersonalEventForm, GroupEventForm, TeamEventForm
 
 
 @login_required
-def index(request):
-    return render(request, 'korean/index.html', {})
+@group_required('Korean')
+def evaluation_status(request):
+    personal_events = PersonalEvent.objects.filter(
+        user=request.user,
+        season=base_queries.get_this_season()
+    ).order_by('start_date')
+
+    return render(request, 'evaluation/status.html', {
+        'personal_events': personal_events
+    })
+
+
+@login_required
+@group_required('Korean')
+def add_personal_activity(request):
+    # TODO: Make restriction by evaluation.
+
+    form = PersonalEventForm(request.POST or None, request.FILES or None)
+    if request.method == 'POST' and form.is_valid():
+        event = form.save(commit=False)
+        event.user = request.user
+        event.season = base_queries.get_this_season()
+        event.save()
+        return redirect(evaluation_list)
+
+    return render(request, 'evaluation/add_personal_activity.html', {
+        'form': form,
+    })
+
+
+@login_required
+@group_required('Korean')
+def remove_personal_activity(request, event_id):
+    event = get_object_or_404(PersonalEvent, id=event_id)
+    # TODO: Make restriction by evaluation.
+
+    if event.user == request.user:
+        event.delete()
+
+    return redirect(evaluation_status)
+
+
+@login_required
+@group_required('Korean')
+def add_group_activity(request):
+    if not is_group_leader(request.user):
+        return redirect(evaluation_list)
+
+    form = GroupEventForm(request.POST or None, request.FILES or None)
+    return render(request, 'evaluation/add_group_activity.html', {
+        'form': form,
+    })
+
+
+@login_required
+@group_required('Korean')
+def add_team_activity(request):
+    if not is_team_leader(request.user):
+        return redirect(evaluation_list)
+    form = TeamEventForm(request.POST or None)
+    koreans = map(lambda x: (korean_queries.get_team_name_by_user(x), x),
+                  korean_queries.get_korean_list())
+    koreans = dict((k, sorted([v for (_, v) in g],
+                              key=lambda x: x.profile.korean_name)) for k, g in
+                   groupby(sorted(koreans), key=lambda (k, v): k))
+
+    return render(request, 'evaluation/add_team_activity.html', {
+        'form': form,
+        'koreans': koreans,
+    })
 
 
 @login_required
 @group_required('Admin')
 def korean_list(request):
-    users = korean_queries.get_korean_list(True)
+    users = korean_queries.get_korean_list('birth')
 
     infos = []
     for user in users:
@@ -38,11 +116,14 @@ def korean_list(request):
 @login_required
 @group_required('Admin')
 def full_list(request):
+    season = base_queries.get_this_season()
     groups = korean_queries.get_group_list()
     infos = []
     for group in groups:
         usergroups = korean_queries.get_usergroups_by_group(group)
-        inner_info = [[x, matching_queries.get_personal_buddies_by_user(x.user)]
+        inner_info = [[x, [[y, ApplicationForeigner.objects.get(user=y,
+                                                                season=season
+                            )] for y in matching_queries.get_personal_buddies_by_user(x.user)]]
                       for x in usergroups]
         infos.append([group, inner_info])
 

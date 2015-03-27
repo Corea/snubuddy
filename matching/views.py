@@ -29,7 +29,8 @@ def list(request):
 
 
 @login_required
-@group_required('Korean')
+# @group_required('Korean')
+@group_required('Admin')
 def register(request):
     form = MatchingKoreanForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
@@ -77,9 +78,10 @@ def view(request, id):
 
 @login_required
 @new_buddy_required
-@group_required('Foreigner')
+@group_required('Admin')
+# @group_required('Foreigner')
 def register_foreigner(request, id):
-    matching = get_object_or_404(Matching, id=id)
+    korean_matching = get_object_or_404(Matching, id=id)
 
     matching_count = MatchingConnection.objects.filter(
         korean_matching=korean_matching).count()
@@ -123,7 +125,8 @@ def register_foreigner(request, id):
 
 @login_required
 @new_buddy_required
-@group_required('Foreigner')
+@group_required('Admin')
+# @group_required('Foreigner')
 def register_full(request):
     return render(request, 'matching/register_full.html', {})
 

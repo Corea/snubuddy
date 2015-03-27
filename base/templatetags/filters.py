@@ -8,6 +8,8 @@ from django.utils.safestring import mark_safe
 
 from application.models import ApplicationForeigner
 from matching.models import MatchingConnection
+from korean.models import UserTeam, UserGroup
+from base.queries import get_this_season
 
 
 register = template.Library()
@@ -65,3 +67,25 @@ def is_new_buddy(user):
     if not application.exists():
         return False
     return not application[0].returning
+
+
+@register.filter
+def is_group_leader(user):
+    usergroup = UserGroup.objects.filter(
+        user=user,
+        group__season=get_this_season())
+
+    if not usergroup.exists():
+        return False
+    return usergroup[0].leader_type == usergroup[0].LEADER
+
+
+@register.filter
+def is_team_leader(user):
+    userteam = UserTeam.objects.filter(
+        user=user,
+        team__season=get_this_season())
+
+    if not userteam.exists():
+        return False
+    return userteam[0].is_leader

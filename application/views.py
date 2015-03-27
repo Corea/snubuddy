@@ -15,6 +15,7 @@ from matching.models import Matching
 
 
 @login_required
+@group_required('Admin')
 def index(request):
     if request.user.groups.filter(name='Admin').exists():
         return redirect(list)
@@ -26,14 +27,18 @@ def index(request):
 @login_required
 @group_required('Admin')
 def list(request):
+    season = get_this_season()
+
     application_infos = []
     application_list = ApplicationForeigner.objects.filter(
-        season=get_this_season()).order_by('id')
+        season=season).order_by('id')
     for application in application_list:
-        exist = Matching.objects.filter(
+        matching = Matching.objects.filter(
             user=application.user,
-            season=get_this_season()).exists()
-        application_infos.append([application, exist])
+            season=season)
+        if matching.exists():
+            matching = matching[0]
+        application_infos.append([application, matching])
 
     return render(request, 'application/list.html', {
         'application_infos': application_infos
@@ -51,7 +56,8 @@ def accept(request, application_id):
 
 
 @login_required
-@group_required('Guest')
+# @group_required('Guest')
+@group_required('Admin')
 def register(request):
     form = ApplicationForeignerForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
@@ -75,6 +81,7 @@ def register(request):
 
 
 @login_required
-@group_required('Guest')
+# @group_required('Guest')
+@group_required('Admin')
 def register_finish(request):
     return render(request, 'application/register_finish.html', {})

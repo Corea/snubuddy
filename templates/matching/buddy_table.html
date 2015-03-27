@@ -7,6 +7,11 @@
     </tr>
 
     <tr>
+        <th>E-Mail</th>
+        <td>{{ matching.user.email }}</td>
+    </tr>
+
+    <tr>
         <th>Gender</th>
         <td>{{ matching.user.profile.get_gender_display }}</td>
     </tr>
@@ -74,7 +79,7 @@
         {% if matching.user|has_group:"Korean" %}
         {% if not user|has_group:"Korean" %}
         {% if user|is_new_buddy %}
-            <a href="/matching/register/{{ matching.id }}/" class="btn btn-info">Be a Buddy</a>
+            <!--<a href="/matching/register/{{ matching.id }}/" class="btn btn-info">Be a Buddy</a>-->
         {% endif %}
         {% endif %}
         {% endif %}

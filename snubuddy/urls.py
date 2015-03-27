@@ -1,3 +1,6 @@
+# -8_ coding: utf-8 -*-
+
+from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
@@ -10,6 +13,10 @@ from korean import views as korean_views
 urlpatterns = patterns(
     '',
     url(r'^admin/', include(admin.site.urls)),
+
+    url(r'^upload/(?P<path>.*)$', 'django.views.static.serve', {
+            'document_root': settings.MEDIA_ROOT}),
+
 
     url(r'^$', base_views.index, name='index'),
     url(r'^account/register/$',
@@ -61,9 +68,6 @@ urlpatterns = patterns(
         matching_views.delete_bye,
         name='matching_delete_bye'),
 
-    url(r'^korean/$',
-        korean_views.index,
-        name='korean_index'),
     url(r'^korean/korean_list/$',
         korean_views.korean_list,
         name='korean_korean_list'),
@@ -73,4 +77,20 @@ urlpatterns = patterns(
     url(r'^korean/make_member/$',
         korean_views.make_member,
         name='korean_make_member'),
+
+    url(r'^evaluation/$',
+        korean_views.evaluation_status,
+        name='evaluation_status'),
+    url(r'^evaluation/personal_activity/$',
+        korean_views.add_personal_activity,
+        name='evaluation_add_personal_activity'),
+    url(r'^evaluation/personal_activity/remove/(\d+)/$',
+        korean_views.remove_personal_activity,
+        name='evaluation_remove_personal_activity'),
+    url(r'^evaluation/group_activity/$',
+        korean_views.add_group_activity,
+        name='evaluation_add_group_activity'),
+    url(r'^evaluation/team_activity/$',
+        korean_views.add_team_activity,
+        name='evaluation_add_team_activity'),
 )
