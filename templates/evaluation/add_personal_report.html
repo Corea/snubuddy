@@ -1,0 +1,20 @@
+{% extends "korean/base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="page-header">{{ month }}월 개인 활동 평가서 작성</h1>
+
+    <div class="alert alert-info">
+        <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+        아래 내용들은 오직 운영진에게만 공개되고, 다음 달 혹은 다음 학기 SNU Buddy 운영에 참고가 될 것입니다.
+    </div>
+
+    <div class="alert alert-danger">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        {{ month }}월 개인 활동 평가서를 작성한 후에는 더이상 {{ month }}월 개인 활동을 <strong>추가할 수 없습니다.</strong>
+        또한 평가서 작성 후에는 <strong>수정이 불가능</strong>하니 신중하게 작성하세요.
+    </div>
+</div>
+
+{% include "form_base_show.html" with submit_class="confirm-required" %}
+{% endblock %}

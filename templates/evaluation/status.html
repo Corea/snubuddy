@@ -4,15 +4,84 @@
 
 {% block content %}
 <div class="container">
+    <h2>Summary</h2>
+    <div class="panel panel-default">
+        <div class="panel-heading"><h3 class="panel-title">Activities</h3></div>
+
+        <table class="table table-condensed table-striped table-center">
+            <thead>
+                <tr>
+                    <th style="width: 40px">#</th>
+                    <th style="width: 70px">Date</th>
+                    <th style="width: 80px">Type</th>
+                    <th>Particulars</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for type, event in attended_events %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    {% if type == 'Team' %}
+                    <td>{{ event.event.start_date|date:"m.d" }}</td>
+                    <td>{{ type }}</td>
+                    <td>{{ event.event.title }}</td>
+                    <td></td>
+                    {% else %}
+                    <td>{{ event.start_date|date:"m.d" }}</td>
+                    <td>{{ type }}</td>
+                    <td>{{ event.title }}</td>
+                    <td>{{ event.get_place_type_display }} ({{ event.place }})</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading"><h3 class="panel-title">Reports</h3></div>
+
+        <table class="table table-condensed table-striped table-center">
+            <thead>
+                <tr>
+                    <th style="width: 40px">#</th>
+                    <th style="width: 70px">Month</th>
+                    <th style="width: 80px">Type</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for type, report in reports %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ report.month }}월</td>
+                    <td>{{ type }}</td>
+                    <td>{{ report.created_datetime|date:"Y/m/d"}}</td>
+                    <td><a href="/evaluation/personal_report/{{ report.id }}/">View</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <hr>
+
+    <h2>Manage</h2>
     <div class="panel panel-default">
         <div class="panel-heading"><h3 class="panel-title">Personal Activity</h3></div>
 
         <table class="table table-condensed table-striped table-center">
             <thead>
                 <tr>
-                    <th>#</th>
+                    <th style="width: 40px">#</th>
+                    <th style="width: 80px">Date</th>
                     <th>Particulars</th>
-                    <th>Date</th>
                     <th>Remarks</th>
                     <th>Photo</th>
                     <th>Action</th>
@@ -23,8 +92,8 @@
             {% for event in personal_events %}
             <tr>
                 <td>{{ forloop.counter }}</td>
-                <td>{{ event.title }}</td>
                 <td>{{ event.start_date|date:"m.d" }}</td>
+                <td>{{ event.title }}</td>
                 <td>{{ event.get_place_type_display }} ({{ event.place }})</td>
                 <td><a href="{{ MEDIA_URL }}{{ event.photo }}">Photo</a></td>
                 <td><a href="/evaluation/personal_activity/remove/{{ event.id }}/" class="confirm-required">Remove</a></td>
@@ -34,64 +103,6 @@
         </table>
     </div>
 
-    <div class="panel panel-default">
-        <div class="panel-heading"><h3 class="panel-title">Group Activity</h3></div>
-
-        <table class="table table-condensed table-striped table-center">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Particulars</th>
-                    <th>Date</th>
-                    <th>Remarks</th>
-                </tr>
-            </thead>
-
-            <tbody>
-            {% for event in group_attended_events %}
-                <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{ event.title }}</td>
-                    <td>{{ event.start_date|date:"m.d" }}</td>
-                    <td>{{ event.get_place_type_display }} ({{ event.place }})</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    <div class="panel panel-default">
-        <div class="panel-heading"><h3 class="panel-title">Team Activity</h3></div>
-
-        <table class="table table-condensed table-striped table-center">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Particulars</th>
-                    <th>Date</th>
-                    <th>Score</th>
-                </tr>
-            </thead>
-
-            <tbody>
-            {% for attend in team_attends %}
-            {% with event=attend.event %}
-                <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{ event.title }}</td>
-                    <td>{{ event.start_date|date:"m.d" }}</td>
-                    <td>{{ attend.score }}</td>
-                </tr>
-            {% endwith %}
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    <hr>
-
-    {% if user|is_group_leader or user|is_team_leader %} 
-    <h2>Manage (for leader)</h2>
 
     {% if user|is_group_leader %} 
     <div class="panel panel-default">
@@ -100,9 +111,10 @@
         <table class="table table-condensed table-striped table-center">
             <thead>
                 <tr>
-                    <th>#</th>
+                    <th style="width: 40px">#</th>
+                    <th style="width: 80px">Date</th>
                     <th>Particulars</th>
-                    <th>Date</th>
+                    <th>Host</th>
                     <th>Remarks</th>
                     <th>Action</th>
                 </tr>
@@ -112,8 +124,9 @@
             {% for event in group_events %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
-                    <td>{{ event.title }}</td>
                     <td>{{ event.start_date|date:"m.d" }}</td>
+                    <td>{{ event.title }}</td>
+                    <td>{{ event.host.profile.korean_name }}</td>
                     <td>{{ event.get_place_type_display }} ({{ event.place }})</td>
                     <td>
                         <a href="/evaluation/group_activity/{{ event.id }}/">Modify</a>
@@ -133,9 +146,9 @@
         <table class="table table-condensed table-striped table-center">
             <thead>
                 <tr>
-                    <th>#</th>
+                    <th style="width: 40px">#</th>
+                    <th style="width: 80px">Date</th>
                     <th>Particulars</th>
-                    <th>Date</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -144,8 +157,8 @@
             {% for event in team_events %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
-                    <td>{{ event.title }}</td>
                     <td>{{ event.start_date|date:"m.d" }}</td>
+                    <td>{{ event.title }}</td>
                     <td>
                         <a href="/evaluation/team_activity/{{ event.id }}/">Modify</a>
                         <a href="/evaluation/team_activity/remove/{{ event.id }}/" class="confirm-required">Remove</a>
@@ -155,7 +168,6 @@
             </tbody>
         </table>
     </div>
-    {% endif %}
     {% endif %}
 </div>
 {% endblock %}

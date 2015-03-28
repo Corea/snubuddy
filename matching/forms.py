@@ -33,7 +33,7 @@ class MatchingKoreanForm(ModelForm):
 
         try:
             languages = self.data.getlist('language[]')
-            print languages
+
             for item in languages:
                 if Language.objects.filter(id=int(item)).count() != 1:
                     raise
@@ -45,8 +45,8 @@ class MatchingKoreanForm(ModelForm):
             if len(languages) != len(language_levels):
                 raise
         except:
-            self._errors['language'] = ['Something wrong with this field']
-            return False
+            self.add_error('language', 'Something wrong with this field')
+            valid = False
 
         return valid
 

@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from datetime import datetime
-
 from itertools import groupby
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
@@ -12,13 +10,16 @@ from base.templatetags.filters import is_team_leader, is_group_leader
 from application.models import ApplicationForeigner
 from korean.models import (
     Team, UserTeam, BuddyGroup, UserGroup,
-    PersonalEvent, GroupEvent, GroupAttend, TeamEvent, TeamAttend
+    PersonalEvent, GroupEvent, GroupAttend, TeamEvent, TeamAttend,
+    PersonalReport
 )
 from base.decorators import group_required
 
 from base.queries import get_this_season, get_user
 from matching.queries import get_personal_buddies_by_user, has_matching
-from korean.forms import PersonalEventForm, GroupEventForm, TeamEventForm
+from korean.forms import (
+    PersonalEventForm, GroupEventForm, TeamEventForm, PersonalReportForm
+)
 
 from korean import queries as korean_queries
 
@@ -39,6 +40,15 @@ def evaluation_status(request):
         user=request.user,
         event__group__season=get_this_season()).order_by('event__start_date'))
 
+    attended_events = map(lambda x: ('Personal', x), list(personal_events)) + \
+        map(lambda x: ('Group', x), list(group_attended_events)) + \
+        map(lambda x: ('Team', x), list(team_attends))
+    attended_events = sorted(attended_events,
+        key=lambda x: x[1].start_date if x[0] != 'Team' else x[1].event.start_date)
+
+    reports = map(lambda x: ('Personal', x),
+        PersonalReport.objects.filter(
+            user=request.user, season=get_this_season()))
     team_events = []
     group_events = []
 
@@ -53,11 +63,11 @@ def evaluation_status(request):
         ).order_by('start_date')
 
     return render(request, 'evaluation/status.html', {
+        'attended_events': attended_events,
         'personal_events': personal_events,
-        'team_attends': team_attends,
-        'group_attended_events': group_attended_events,
         'team_events': team_events,
         'group_events': group_events,
+        'reports': reports,
     })
 
 
@@ -79,6 +89,7 @@ def add_personal_activity(request):
     })
 
 
+# ACTIVITY PART
 @login_required
 @group_required('Korean')
 def remove_personal_activity(request, event_id):
@@ -106,7 +117,7 @@ def add_group_activity(request):
         if member[0].id in checked_ids:
             member[1] = True
 
-    form = GroupEventForm(request.POST or None)
+    form = GroupEventForm(group, request.POST or None)
     if request.method == 'POST' and form.is_valid():
         event = form.save(commit=False)
         event.group = group
@@ -149,7 +160,7 @@ def modify_group_activity(request, event_id):
         if user.id in checked_ids:
             member[1] = True
 
-    form = GroupEventForm(request.POST or None, instance=event)
+    form = GroupEventForm(group, request.POST or None, instance=event)
     if request.method == 'POST' and form.is_valid():
         GroupAttend.objects.filter(event=event).delete()
         event = form.save()
@@ -294,6 +305,54 @@ def remove_team_activity(request, event_id):
     return redirect(evaluation_status)
 
 
+# REPORTING PART
+@login_required
+@group_required('Korean')
+def add_personal_report(request):
+    month = korean_queries.get_target_month()
+    if korean_queries.exist_personal_report(request.user, month):
+        return render(request, 'evaluation/exist_report.html', {})
+
+    form = PersonalReportForm(request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        report = form.save(commit=False)
+        report.user = request.user
+        report.season = get_this_season()
+        report.month = month
+        report.save()
+        return redirect(evaluation_status)
+
+    return render(request, 'evaluation/add_personal_report.html', {
+        'form': form,
+        'month': month,
+    })
+
+
+@login_required
+@group_required('Korean')
+def view_personal_report(request, report_id):
+    report = get_object_or_404(PersonalReport, id=report_id)
+    if report.user != request.user and \
+            not request.user.goups.filter(name='Admin').exists():
+        return redirect(evaluation_status)
+
+    return render(request, 'evaluation/view_personal_report.html', {
+        'report': report,
+    })
+
+
+@login_required
+@group_required('Korean')
+def remove_personal_report(request, report_id):
+    report = get_object_or_404(PersonalReport, id=report_id)
+    if report.user == request.user:
+        report.delete()
+
+    return redirect(evaluation_status)
+
+
+# LISTING PART
 @login_required
 @group_required('Admin')
 def korean_list(request):

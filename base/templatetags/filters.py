@@ -81,6 +81,17 @@ def is_group_leader(user):
 
 
 @register.filter
+def is_group_subleader(user):
+    usergroup = UserGroup.objects.filter(
+        user=user,
+        group__season=get_this_season())
+
+    if not usergroup.exists():
+        return False
+    return usergroup[0].leader_type == usergroup[0].SUBLEADER
+
+
+@register.filter
 def is_team_leader(user):
     userteam = UserTeam.objects.filter(
         user=user,

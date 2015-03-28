@@ -46,9 +46,8 @@ $(document).ready(function() {
             return confirm('Really?');
         });
     }
-
-    if ($('#KoreanTable').length > 0) {
-        $('#KoreanTable').parents('form').submit(function() {
+    if ($('button.confirm-required').length > 0) {
+        $('button.confirm-required').parents('form').submit(function() {
             return confirm('Really?');
         });
     }

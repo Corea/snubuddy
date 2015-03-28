@@ -1,0 +1,35 @@
+{% load filters %}
+
+{% if form.non_field_errors %}
+<div class="container">
+    <div class="alert alert-danger">
+        {% for error in form.non_field_errors %} 
+        <p>{{ error }}</p>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<div class="container">
+    <form method="post" action="." class="" role="form">
+        {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id }}" class="control-label">{{ field.label }}</label>
+            {{ field|add_class:"form-control" }}
+
+            {% if field.help_text %}
+            <p class="help-block">{{ field.help_text }}</p>
+            {% endif %}
+
+            {% for error in field.errors %}
+            <p class="help-block">{{ error }}</p>
+            {% endfor %}
+        </div>
+        {% endfor %}
+
+        <div class="form-group">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-default {{ submit_class }}">Submit</button> 
+        </div>
+    </form>
+</div>

@@ -43,9 +43,9 @@ class UserGroup(models.Model):
     LEADER = 1
     SUBLEADER = 2
     LEADER_CHOICES = (
-        (NOTHING, ''),
-        (LEADER, '조장'),
-        (SUBLEADER, '부조장'),
+        (NOTHING, u''),
+        (LEADER, u'조장'),
+        (SUBLEADER, u'부조장'),
     )
 
     group = models.ForeignKey(BuddyGroup, null=False)
@@ -67,10 +67,10 @@ class PersonalEvent(models.Model):
     METROPOLITAN_AREA = 2
     OTHER = 3
     PLACE_CHOICES = (
-        (CAMPUS, '교내'),
-        (NEAR_CAMPUS, '학교 근처'),
-        (METROPOLITAN_AREA, '수도권'),
-        (OTHER, '수도권 외'),
+        (CAMPUS, u'교내'),
+        (NEAR_CAMPUS, u'학교 근처'),
+        (METROPOLITAN_AREA, u'수도권'),
+        (OTHER, u'수도권 외'),
     )
 
     user = models.ForeignKey(User, null=False)
@@ -84,10 +84,10 @@ class PersonalEvent(models.Model):
 
     def __unicode__(self):
         arr = [self.user.profile.korean_name,
-               self.start_date,
-               dict(self.PLACE_CHOICES[self.place_type]),
+               unicode(self.start_date),
+               dict(self.PLACE_CHOICES)[self.place_type],
                unicode(self.place),
-               unicode(self.name)]
+               unicode(self.title)]
 
         return u'/'.join(arr)
 
@@ -97,13 +97,16 @@ class GroupEvent(models.Model):
     NEAR_CAMPUS = 1
     METROPOLITAN_AREA = 2
     OTHER = 3
+    KOREAN = 4
     PLACE_CHOICES = (
-        (CAMPUS, '교내'),
-        (NEAR_CAMPUS, '학교 근처'),
-        (METROPOLITAN_AREA, '수도권'),
-        (OTHER, '수도권 외'),
+        (CAMPUS, u'교내'),
+        (NEAR_CAMPUS, u'학교 근처'),
+        (METROPOLITAN_AREA, u'수도권'),
+        (OTHER, u'수도권 외'),
+        (KOREAN, u'한국인 모임'),
     )
 
+    host = models.ForeignKey(User, null=False)
     group = models.ForeignKey(BuddyGroup, null=False)
     title = models.CharField(max_length=256, null=False)
     start_date = models.DateField(null=False)
@@ -111,11 +114,11 @@ class GroupEvent(models.Model):
     place_type = models.IntegerField(choices=PLACE_CHOICES, null=False)
 
     def __unicode__(self):
-        arr = [self.group,
-               self.start_date,
-               dict(self.PLACE_CHOICES[self.place_type]),
+        arr = [unicode(self.group),
+               unicode(self.start_date),
+               dict(self.PLACE_CHOICES)[self.place_type],
                unicode(self.place),
-               unicode(self.name)]
+               unicode(self.title)]
 
         return u'/'.join(arr)
 
@@ -125,7 +128,8 @@ class GroupAttend(models.Model):
     user = models.ForeignKey(User, null=False)
 
     def __unicode__(self):
-        return u' '.join([self.user.profile.korean_name, self.event])
+        return u' '.join([self.user.profile.korean_name,
+                          unicode(self.event)])
 
 
 class TeamEvent(models.Model):
@@ -134,9 +138,7 @@ class TeamEvent(models.Model):
     start_date = models.DateField(null=False)
 
     def __unicode__(self):
-        arr = [self.team,
-               self.start_date,
-               unicode(self.name)]
+        arr = [unicode(self.team), unicode(self.start_date), self.title]
 
         return u'/'.join(arr)
 
@@ -148,39 +150,21 @@ class TeamAttend(models.Model):
 
     def __unicode__(self):
         return u' '.join([self.user.profile.korean_name,
-                          self.event, unicode(self.score)])
+                          unicode(self.event), unicode(self.score)])
 
 
-# # Report
-# class Question(models.Model):
-#     question = models.CharField(max_length=256)
-#     created_on = models.DateTimeField(auto_now_add=True)
-#     modified_on = models.DateTimeField(auto_now=True)
-#
-#     def __unicode__(self):
-#         return u'%s' % self.question
-#
-#
-# #class Report(models.Model):
-# #    season = models.ForeignKey(Season, null=False)
-# #    month = models.IntegerField(null=False)
-# #    deadline = models.DateTimeField(null=False)
-# #    created_on = models.DateTimeField(auto_now_add=True)
-# #    modified_on = models.DateTimeField(auto_now=True)
-#
-#
-# #class PersonalReport(models.Model):
-# #    report = models.ForeignKey(Report, null=False)
-# #    user = models.ForeignKey(User, null=False)
-# #    foreign_buddy_name = models.CharField(max_length=64)
-# #    created_on = models.DateTimeField(auto_now_add=True)
-# #    modified_on = models.DateTimeField(auto_now=True)
-#
-#
-# class PersonalEvaluation(models.Model):
-#     # personal_report = models.ForeignKey(PersonalReport, null=False)
-#     user = models.ForeignKey(User, null=False)
-#     question = models.ForeignKey(Question, null=False)
-#     answer = models.TextField(null=False)
-#     created_on = models.DateTimeField(auto_now_add=True)
-#     modified_on = models.DateTimeField(auto_now=True)
+class PersonalReport(models.Model):
+    user = models.ForeignKey(User, null=False)
+    season = models.ForeignKey(Season, null=False)
+    month = models.IntegerField(null=False)
+    question1 = models.TextField(null=False, blank=True)
+    question2 = models.TextField(null=False, blank=True)
+    question3 = models.TextField(null=False, blank=True)
+    question4 = models.TextField(null=False, blank=True)
+    question5 = models.TextField(null=False, blank=True)
+    created_datetime = models.DateTimeField(auto_now_add=True)
+
+    def __unicode__(self):
+        return u' '.join([self.user.profile.korean_name,
+                          unicode(self.season),
+                          unicode(self.month) + u'월'])

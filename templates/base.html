@@ -60,13 +60,18 @@
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="/evaluation/">내 활동 상황</a></li>
                                 <li><a href="/evaluation/personal_activity/">개인 활동 추가</a></li>
+                                <li><a href="/evaluation/personal_report/">개인 활동 평가서 작성</a></li>
 
                                 {% if user|is_group_leader %}
                                 <li><a href="/evaluation/group_activity/">조 활동 추가</a></li>
                                 {% endif %}
+                                {% if user|is_group_leader or user|is_group_subleader %}
+                                <li><a href="/evaluation/group_report/">조 활동 평가서 작성</a></li>
+                                {% endif %}
 
                                 {% if user|is_team_leader %}
                                 <li><a href="/evaluation/team_activity/">팀 활동 추가</a></li>
+                                <li><a href="/evaluation/team_report/">팀 활동 평가서 작성</a></li>
                                 {% endif %}
 
                                 {% if user|has_group:"Admin" %}

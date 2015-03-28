@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime, timedelta
+
 from django.contrib.auth.models import User, Group
 
-from korean.models import Team, UserTeam, BuddyGroup, UserGroup
-from base import queries as base_queries
+from korean.models import (
+    Team, UserTeam, BuddyGroup, UserGroup, PersonalReport
+)
+from base.queries import get_this_season
 
 
 def get_korean_list(sort_option=''):
@@ -21,7 +25,7 @@ def get_userteam_by_user(user):
     try:
         return UserTeam.objects.get(
             user=user,
-            team__season=base_queries.get_this_season())
+            team__season=get_this_season())
     except:
         return None
 
@@ -39,7 +43,7 @@ def get_team_name_by_user(user):
 def make_team_member(user, team):
     UserTeam.objects.filter(
         user=user,
-        team__season=base_queries.get_this_season()).delete()
+        team__season=get_this_season()).delete()
 
     if team != 0:
         UserTeam.objects.create(user=user, team=team)
@@ -57,7 +61,7 @@ def get_usergroup_by_user(user):
     try:
         return UserGroup.objects.get(
             user=user,
-            group__season=base_queries.get_this_season())
+            group__season=get_this_season())
     except:
         return None
 
@@ -74,7 +78,7 @@ def get_member_by_buddygroup(group):
 def make_group_member(user, group):
     UserGroup.objects.filter(
         user=user,
-        group__season=base_queries.get_this_season()).delete()
+        group__season=get_this_season()).delete()
 
     UserGroup.objects.create(user=user, group=group)
 
@@ -84,3 +88,12 @@ def make_group_leader(user, leader_type):
     if usergroup is not None:
         usergroup.leader_type = leader_type
         usergroup.save()
+
+
+def get_target_month():
+    return (datetime.now().date() - timedelta(days=14)).month
+
+
+def exist_personal_report(user, month):
+    return PersonalReport.objects.filter(
+        user=user, season=get_this_season(), month=month).exists()

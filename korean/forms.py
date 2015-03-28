@@ -3,10 +3,14 @@
 from datetime import date
 
 from django import forms
-from django.forms import ModelForm
+from django.forms import ModelForm, Textarea
 from django.contrib.admin.widgets import AdminFileWidget
 
-from korean.models import PersonalEvent, GroupEvent, TeamEvent
+from django.contrib.auth.models import User
+from korean.models import (
+    UserGroup, PersonalEvent, GroupEvent, TeamEvent,
+    PersonalReport
+)
 
 
 class PersonalEventForm(ModelForm):
@@ -31,18 +35,23 @@ class PersonalEventForm(ModelForm):
             self.add_error('start_date', 'Please make sure the date.')
             valid = False
 
-        if not valid:
-            return valid
-
-        return True
+        return valid
 
 
 class GroupEventForm(ModelForm):
+    def __init__(self, group, *args, **kwargs):
+        super(GroupEventForm, self).__init__(*args, **kwargs)
+        self.fields['host'].queryset = User.objects.filter(
+            id__in=UserGroup.objects.filter(group=group).values('user'))
+        self.fields['host'].label_from_instance = \
+            lambda obj: obj.profile.korean_name
+
     class Meta:
         model = GroupEvent
-        fields = ('title', 'start_date', 'place', 'place_type')
+        fields = ('title', 'start_date', 'host', 'place', 'place_type')
         labels = {
             'title': u'Particulars',
+            'host': u'Host',
             'start_date': u'Date',
             'place': u'Remarks',
             'place_type': u'Category',
@@ -59,10 +68,7 @@ class GroupEventForm(ModelForm):
             self.add_error('start_date', 'Please make sure the date.')
             valid = False
 
-        if not valid:
-            return valid
-
-        return True
+        return valid
 
 
 class TeamEventForm(ModelForm):
@@ -85,7 +91,25 @@ class TeamEventForm(ModelForm):
             self.add_error('start_date', 'Please make sure the date.')
             valid = False
 
-        if not valid:
-            return valid
+        return valid
 
-        return True
+
+class PersonalReportForm(ModelForm):
+    class Meta:
+        model = PersonalReport
+        exclude = ('user', 'season', 'month', 'created_datetime')
+        labels = {
+            'question1': u'1. 이번 달 자신의 버디와 만난 횟수는? (조모임 활동 제외)',
+            'question2': u'2. 일주일 동안 버디와 함께 보내는 시간은 평균 몇시간입니까? (조모임 활동 제외)',
+            'question3': u'3. SNU Buddy 활동에 있는 애로사항을 이야기해 주세요.',
+            'question4': u'4. SNU Buddy 활동에 대한 건의사항이 있습니까?',
+            'question5': u'5. 다음 달 활동에 임하는 마음가짐을 이야기해 주세요.',
+        }
+        widgets = {
+            'question1': Textarea(attrs={'rows': 3}),
+            'question2': Textarea(attrs={'rows': 3}),
+            'question3': Textarea(attrs={'rows': 3}),
+            'question4': Textarea(attrs={'rows': 3}),
+            'question5': Textarea(attrs={'rows': 3}),
+        }
+

@@ -1,0 +1,42 @@
+{% extends "evaluation/base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="page-header">{{ report.month }}월 개인 평가서 <small>{{ report.user.profile.korean_name }}</small></h1>
+</div>
+
+<div class="container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Question</th>
+                <th>Answer</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <th class="col-xs-6">1. 이번 달 자신의 버디와 만난 횟수는? (조모임 활동 제외)</th>
+                <td class="col-xs-6">{{ report.question1|linebreaks }}</td>
+            </tr>
+            <tr>
+                <th>2. 일주일 동안 버디와 함께 보내는 시간은 평균 몇시간입니까? (조모임 활동 제외)</th>
+                <td>{{ report.question2|linebreaks }}</td>
+            </tr>
+            <tr>
+                <th>3. SNU Buddy 활동에 있는 애로사항을 이야기해 주세요.</th>
+                <td>{{ report.question3|linebreaks }}</td>
+            </tr>
+            <tr>
+                <th>4. SNU Buddy 활동에 대한 건의사항이 있습니까?</th>
+                <td>{{ report.question4|linebreaks }}</td>
+            </tr>
+            <tr>
+                <th>5. 다음 달 활동에 임하는 마음가짐을 이야기해 주세요</th>
+                <td>{{ report.question5|linebreaks }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
