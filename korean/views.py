@@ -74,10 +74,14 @@ def evaluation_status(request):
 @login_required
 @group_required('Korean')
 def add_personal_activity(request):
-    # TODO: Make restriction by evaluation.
-
     form = PersonalEventForm(request.POST or None, request.FILES or None)
     if request.method == 'POST' and form.is_valid():
+        if korean_queries.exist_personal_report(
+                request.user, event.start_date.month):
+            return render(request, 'error.html', {
+                'error': u'%s월 평가서를 이미 작성하셨습니다.' % event.start_date.month
+            })
+
         event = form.save(commit=False)
         event.user = request.user
         event.season = get_this_season()
@@ -94,9 +98,14 @@ def add_personal_activity(request):
 @group_required('Korean')
 def remove_personal_activity(request, event_id):
     event = get_object_or_404(PersonalEvent, id=event_id)
-    # TODO: Make restriction by evaluation.
 
     if event.user == request.user:
+        if korean_queries.exist_personal_report(
+                request.user, event.start_date.month):
+            return render(request, 'error.html', {
+                'error': u'%s월 평가서를 이미 작성하셨습니다.' % event.start_date.month
+            })
+
         event.delete()
 
     return redirect(evaluation_status)
@@ -311,7 +320,9 @@ def remove_team_activity(request, event_id):
 def add_personal_report(request):
     month = korean_queries.get_target_month()
     if korean_queries.exist_personal_report(request.user, month):
-        return render(request, 'evaluation/exist_report.html', {})
+        return render(request, 'error.html', {
+            'error': u'이미 작성하셨습니다.'
+        })
 
     form = PersonalReportForm(request.POST or None)
 
