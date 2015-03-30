@@ -108,8 +108,13 @@ def exist_personal_report(user, month):
 
 
 def exist_group_report(user, month):
-    return GroupReport.objects.filter(
+    result = GroupReport.objects.filter(
         user=user, season=get_this_season(), month=month).exists()
+
+    if month == 2 or month == 8:
+        result |= GroupReport.objects.filter(
+            user=user, season=get_this_season(), month=month+1).exists()
+    return result
 
 
 def exist_team_report(team, month):

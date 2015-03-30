@@ -34,6 +34,13 @@ def add_class(value, css_class):
 
 
 @register.filter
+def add_disabled(value):
+    string = unicode(value)
+    return mark_safe(string.replace('>', ' disabled>'))
+
+
+
+@register.filter
 def has_group(user, group_name):
     return user.groups.filter(name=group_name).exists()
 

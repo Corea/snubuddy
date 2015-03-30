@@ -171,10 +171,9 @@ def modify_group_activity(request, event_id):
     if event.group != get_buddygroup_by_user(request.user):
         return redirect(evaluation_status)
 
+    disabled = False
     if exist_group_report(request.user, event.start_date.month):
-        return render(request, 'error.html', {
-            'error': u'%s월 평가서를 이미 작성하셨습니다.' % event.start_date.month
-        })
+        disabled = True
 
     group = get_buddygroup_by_user(request.user)
     members = map(lambda x: [x, False],
@@ -192,6 +191,11 @@ def modify_group_activity(request, event_id):
 
     form = GroupEventForm(group, request.POST or None, instance=event)
     if request.method == 'POST' and form.is_valid():
+        if disabled:
+            return render(request, 'error.html', {
+                'error': u'%s월 평가서를 이미 작성하셨습니다.' % event.start_date.month
+            })
+
         GroupAttend.objects.filter(event=event).delete()
         event = form.save()
 
@@ -202,9 +206,10 @@ def modify_group_activity(request, event_id):
 
         return redirect(evaluation_status)
 
-    return render(request, 'evaluation/add_group_activity.html', {
+    return render(request, 'evaluation/modify_group_activity.html', {
         'form': form,
-        'members': members
+        'members': members,
+        'disabled': disabled
     })
 
 
@@ -286,13 +291,16 @@ def modify_team_activity(request, event_id):
     if event.team != get_team_by_user(request.user):
         return redirect(evaluation_status)
 
+    disabled = False
     if exist_team_report(event.team, event.start_date.month):
-        return render(request, 'error.html', {
-            'error': u'%s월 평가서를 이미 작성하셨습니다.' % event.start_date.month
-        })
+        disabled = True
 
     form = TeamEventForm(request.POST or None, instance=event)
     if request.method == 'POST' and form.is_valid():
+        if disabled:
+            return render(request, 'error.html', {
+                'error': u'%s월 평가서를 이미 작성하셨습니다.' % event.start_date.month
+            })
         TeamAttend.objects.filter(event=event).delete()
         event = form.save()
 
@@ -328,9 +336,10 @@ def modify_team_activity(request, event_id):
         value = sorted(value, key=lambda x: x[0].profile.korean_name)
     koreans = reversed(sorted(koreans.iteritems()))
 
-    return render(request, 'evaluation/add_team_activity.html', {
+    return render(request, 'evaluation/modify_team_activity.html', {
         'form': form,
         'koreans': koreans,
+        'disabled': disabled,
     })
 
 
