@@ -170,7 +170,7 @@ class PersonalReport(models.Model):
                           unicode(self.month) + u'월'])
 
 
-class TeamReportSubmit(models.Model):
+class TeamReport(models.Model):
     user = models.ForeignKey(User, null=False)
     team = models.ForeignKey(Team, null=False)
     season = models.ForeignKey(Season, null=False)
@@ -178,7 +178,7 @@ class TeamReportSubmit(models.Model):
     created_datetime = models.DateTimeField(auto_now_add=True)
 
 
-class TeamReport(models.Model):
+class TeamEvaluation(models.Model):
     A = 0
     B = 1
     C = 2
@@ -190,13 +190,29 @@ class TeamReport(models.Model):
         (D, u'D'),
     )
 
-    report_submit = models.ForeignKey(TeamReportSubmit, null=False)
+    report = models.ForeignKey(TeamReport, null=False)
     user = models.ForeignKey(User, null=False)
     grade = models.IntegerField(choices=LEADER_CHOICES, null=False)
     reason = models.CharField(max_length=512, null=False, blank=True)
 
     def __unicode__(self):
         return u' '.join([self.user.profile.korean_name,
-                          unicode(self.report_submit.season),
-                          unicode(self.report_submit.month) + u'월',
+                          unicode(self.report.season),
+                          unicode(self.report.month) + u'월',
                           unicode(grade)])
+
+
+class GroupReport(models.Model):
+    user = models.ForeignKey(User, null=False)
+    group = models.ForeignKey(BuddyGroup, null=False)
+    season = models.ForeignKey(Season, null=False)
+    month = models.IntegerField(null=False)
+    created_datetime = models.DateTimeField(auto_now_add=True)
+
+
+class GroupEvaluation(models.Model):
+    report = models.ForeignKey(GroupReport, null=False)
+    user = models.ForeignKey(User, null=False)
+    score1 = models.IntegerField(null=False)
+    score2 = models.IntegerField(null=False)
+    reason = models.CharField(max_length=512, null=False, blank=True)

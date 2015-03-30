@@ -61,7 +61,7 @@
                     <td>{{ report.month }}월</td>
                     <td>{{ type }}</td>
                     <td>{{ report.created_datetime|date:"Y/m/d"}}</td>
-                    <td><a href="/evaluation/personal_report/{{ report.id }}/">View</a></td>
+                    <td><a href="/evaluation/{{ type|lower }}_report/{{ report.id }}/">View</a></td>
                 </tr>
             {% endfor %}
             </tbody>

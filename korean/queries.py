@@ -6,7 +6,7 @@ from django.contrib.auth.models import User, Group
 
 from korean.models import (
     Team, UserTeam, BuddyGroup, UserGroup,
-    PersonalReport, TeamReport, TeamReportSubmit
+    PersonalReport, TeamReport, TeamEvaluation
 )
 from base.queries import get_this_season
 
@@ -108,11 +108,11 @@ def exist_personal_report(user, month):
 
 
 def exist_team_report(team, month):
-    result = TeamReportSubmit.objects.filter(
+    result = TeamReport.objects.filter(
         team=team, season=get_this_season(), month=month).exists()
 
     if month == 2 or month == 8:
-        result |= TeamReportSubmit.objects.filter(
+        result |= TeamReport.objects.filter(
             team=team, season=get_this_season(), month=month+1).exists()
 
     return result

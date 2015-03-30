@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="container">
-    <h1 class="page-header">{{ month }}월 {{ team.name }}팀 활동 평가서</h1>
+    <h1 class="page-header">{{ report.month }}월 {{ report.team.name }}팀 활동 평가서 <small>작성자: {{ report.user.profile.korean_name }}</small></h1>
 </div>
 
 <div class="container">
@@ -18,11 +18,11 @@
         </thead>
 
         <tbody>
-            {% for report in reports %}
+            {% for evaluation in evaluations %}
             <tr>
-                <td>{{ report.user.profile.korean_name }}</td>
-                <td>{{ report.get_grade_display }}</td>
-                <td>{{ report.reason }}</td>
+                <td>{{ evaluation.user.profile.korean_name }}</td>
+                <td>{{ evaluation.get_grade_display }}</td>
+                <td>{{ evaluation.reason }}</td>
             </tr>
             {% endfor %}
         </tbody>

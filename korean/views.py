@@ -11,7 +11,7 @@ from application.models import ApplicationForeigner
 from korean.models import (
     Team, UserTeam, BuddyGroup, UserGroup,
     PersonalEvent, GroupEvent, GroupAttend, TeamEvent, TeamAttend,
-    PersonalReport, TeamReportSubmit, TeamReport
+    PersonalReport, TeamReport, TeamEvaluation
 )
 from base.decorators import group_required
 
@@ -27,6 +27,7 @@ from korean import queries as korean_queries
 @login_required
 @group_required('Korean')
 def evaluation_status(request):
+    # Events
     personal_events = PersonalEvent.objects.filter(
         user=request.user,
         season=get_this_season()
@@ -46,21 +47,27 @@ def evaluation_status(request):
     attended_events = sorted(attended_events,
         key=lambda x: x[1].start_date if x[0] != 'Team' else x[1].event.start_date)
 
-    reports = map(lambda x: ('Personal', x),
-        PersonalReport.objects.filter(
-            user=request.user, season=get_this_season()))
+    # Reports
+    personal_report = PersonalReport.objects.filter(
+        user=request.user, season=get_this_season())
+    reports = map(lambda x: ('Personal', x), personal_report)
     team_events = []
     group_events = []
 
     if is_team_leader(request.user):
+        team = korean_queries.get_team_by_user(request.user)
         team_events = TeamEvent.objects.filter(
-            team=korean_queries.get_team_by_user(request.user)
-        ).order_by('start_date')
+            team=team).order_by('start_date')
+        team_reports = TeamReport.objects.filter(
+            team=team, season=get_this_season())
+        reports += map(lambda x: ('Team', x), team_reports)
 
     if is_group_leader(request.user):
         group_events = GroupEvent.objects.filter(
             group=korean_queries.get_buddygroup_by_user(request.user)
         ).order_by('start_date')
+
+    reports = sorted(reports, key=lambda (x, y): (y.month, x))
 
     return render(request, 'evaluation/status.html', {
         'attended_events': attended_events,
@@ -392,17 +399,17 @@ def add_team_report(request):
         members.append((user, grade, reason, error))
 
     if request.method == 'POST' and valid:
-        submit = TeamReportSubmit.objects.create(
+        report = TeamReport.objects.create(
             user=request.user,
             team=team,
             season=get_this_season(),
             month=month)
 
         for user, grade, reason, _ in members:
-            report = TeamReport.objects.create(
-                report_submit=submit, user=user,
+            evaluation = TeamEvaluation.objects.create(
+                report=report, user=user,
                 grade=int(grade), reason=reason)
-            report.save()
+            evaluation.save()
 
         return redirect(evaluation_status)
 
@@ -417,17 +424,14 @@ def add_team_report(request):
 def view_team_report(request, id):
     if not is_team_leader(request.user):
         return redirect(evaluation_status)
-    report_submit = get_object_or_404(TeamReportSubmit, id=id)
-    month = report_submit.month
-    team = report_submit.team
 
-    reports = TeamReport.objects.filter(
-        report_submit=report_submit).order_by('user__profile__korean_name')
+    report = get_object_or_404(TeamReport, id=id)
+    evaluations = TeamEvaluation.objects.filter(
+        report=report).order_by('user__profile__korean_name')
 
     return render(request, 'evaluation/view_team_report.html', {
-        'team': team,
-        'month': month,
-        'reports': reports,
+        'report': report,
+        'evaluations': evaluations,
     })
 
 # LISTING PART
