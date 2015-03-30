@@ -114,8 +114,11 @@ urlpatterns = patterns(
     url(r'^evaluation/personal_report/(\d+)/$',
         korean_views.view_personal_report,
         name='evaluation_view_personal_report'),
-    url(r'^evaluation/personal_report/remove/(\d+)/$',
-        korean_views.remove_personal_report,
-        name='evaluation_remove_personal_report'),
 
+    url(r'^evaluation/team_report/$',
+        korean_views.add_team_report,
+        name='evaluation_add_team_report'),
+    url(r'^evaluation/team_report/(\d+)/$',
+        korean_views.view_team_report,
+        name='evaluation_view_team_report'),
 )

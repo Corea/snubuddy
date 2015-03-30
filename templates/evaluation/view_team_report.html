@@ -1,0 +1,31 @@
+{% extends "korean/base.html" %}
+
+{% load filters %}
+
+{% block content %}
+<div class="container">
+    <h1 class="page-header">{{ month }}월 {{ team.name }}팀 활동 평가서</h1>
+</div>
+
+<div class="container">
+    <table class="table table-center table-condensed table-striped">
+        <thead>
+            <tr>
+                <th class="col-xs-2">Name</th>
+                <th class="col-xs-2">Grade</th>
+                <th class="col-xs-6">Reason</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for report in reports %}
+            <tr>
+                <td>{{ report.user.profile.korean_name }}</td>
+                <td>{{ report.get_grade_display }}</td>
+                <td>{{ report.reason }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

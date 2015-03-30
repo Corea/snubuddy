@@ -5,7 +5,8 @@ from datetime import datetime, timedelta
 from django.contrib.auth.models import User, Group
 
 from korean.models import (
-    Team, UserTeam, BuddyGroup, UserGroup, PersonalReport
+    Team, UserTeam, BuddyGroup, UserGroup,
+    PersonalReport, TeamReport, TeamReportSubmit
 )
 from base.queries import get_this_season
 
@@ -38,6 +39,12 @@ def get_team_by_user(user):
 def get_team_name_by_user(user):
     team = get_team_by_user(user)
     return team.name if team else ''
+
+
+def get_member_by_team(team):
+    return sorted(map(lambda x: x.user,
+                      UserTeam.objects.filter(team=team)),
+                  key=lambda x: x.profile.korean_name)
 
 
 def make_team_member(user, team):
@@ -90,6 +97,7 @@ def make_group_leader(user, leader_type):
         usergroup.save()
 
 
+# Report
 def get_target_month():
     return (datetime.now().date() - timedelta(days=14)).month
 
@@ -97,3 +105,15 @@ def get_target_month():
 def exist_personal_report(user, month):
     return PersonalReport.objects.filter(
         user=user, season=get_this_season(), month=month).exists()
+
+
+def exist_team_report(team, month):
+    result = TeamReportSubmit.objects.filter(
+        team=team, season=get_this_season(), month=month).exists()
+
+    if month == 2 or month == 8:
+        result |= TeamReportSubmit.objects.filter(
+            team=team, season=get_this_season(), month=month+1).exists()
+
+    return result
+

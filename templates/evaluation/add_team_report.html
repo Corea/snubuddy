@@ -1,0 +1,65 @@
+{% extends "korean/base.html" %}
+
+{% load filters %}
+
+{% block content %}
+<div class="container">
+    <h1 class="page-header">{{ month }}월 팀 활동 평가서 작성</h1>
+
+    <div class="alert alert-danger">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        {{ month }}월 팀 활동 평가서를 작성한 후에는 더이상 {{ month }}월 팀 활동을 <strong>추가할 수 없습니다.</strong>
+        또한 평가서 작성 후에는 <strong>수정이 불가능</strong>하니 신중하게 작성하세요.
+    </div>
+
+    <div class="alert alert-danger">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        해당 팀의 팀장이 둘 이상인 경우, 팀장끼리 상의하에 작성해주세요.
+    </div>
+</div>
+
+{% if form.non_field_errors %}
+<div class="container">
+    <div class="alert alert-danger">
+        {% for error in form.non_field_errors %} 
+        <p>{{ error }}</p>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<div class="container">
+    <form method="post" action="." class="form-horizontal" role="form">
+        {% for user, grade, reason, error in members %}
+        <div class="form-group {% if error %}has-error{% endif %}">
+            <label class="col-sm-2 control-label">{{ user.profile.korean_name }}</label>
+            <div class="col-sm-10">
+                <div class="row">
+                    <div class="col-sm-3 col-md-2">
+                        <select name="grade_{{ user.id }}" class="form-control input-sm">
+                            <option value="" {% if grade == '' %}selected="selected"{% endif %} class="form-control">---------</option>
+                            <option value="0" {% if grade == '0' %}selected="selected"{% endif %} class="form-control">A</option>
+                            <option value="1" {% if grade == '1' %}selected="selected"{% endif %} class="form-control">B</option>
+                            <option value="2" {% if grade == '2' %}selected="selected"{% endif %} class="form-control">C</option>
+                            <option value="3" {% if grade == '3' %}selected="selected"{% endif %} class="form-control">D</option>
+                        </select>
+                    </div>
+
+                    <div class="col-sm-9 col-md-10">
+                        <input type="text" name="reason_{{ user.id }}" class="form-control input-sm" value="{{ reason }}" placeholder="특이사항">
+                    </div>
+                </div>
+                <p class="help-block">{{ error }}</p>
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-default">Submit</button> 
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -168,3 +168,35 @@ class PersonalReport(models.Model):
         return u' '.join([self.user.profile.korean_name,
                           unicode(self.season),
                           unicode(self.month) + u'월'])
+
+
+class TeamReportSubmit(models.Model):
+    user = models.ForeignKey(User, null=False)
+    team = models.ForeignKey(Team, null=False)
+    season = models.ForeignKey(Season, null=False)
+    month = models.IntegerField(null=False)
+    created_datetime = models.DateTimeField(auto_now_add=True)
+
+
+class TeamReport(models.Model):
+    A = 0
+    B = 1
+    C = 2
+    D = 3
+    LEADER_CHOICES = (
+        (A, u'A'),
+        (B, u'B'),
+        (C, u'C'),
+        (D, u'D'),
+    )
+
+    report_submit = models.ForeignKey(TeamReportSubmit, null=False)
+    user = models.ForeignKey(User, null=False)
+    grade = models.IntegerField(choices=LEADER_CHOICES, null=False)
+    reason = models.CharField(max_length=512, null=False, blank=True)
+
+    def __unicode__(self):
+        return u' '.join([self.user.profile.korean_name,
+                          unicode(self.report_submit.season),
+                          unicode(self.report_submit.month) + u'월',
+                          unicode(grade)])
