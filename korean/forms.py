@@ -112,4 +112,3 @@ class PersonalReportForm(ModelForm):
             'question4': Textarea(attrs={'rows': 3}),
             'question5': Textarea(attrs={'rows': 3}),
         }
-

@@ -115,6 +115,13 @@ urlpatterns = patterns(
         korean_views.view_personal_report,
         name='evaluation_view_personal_report'),
 
+    url(r'^evaluation/group_report/$',
+        korean_views.add_group_report,
+        name='evaluation_add_group_report'),
+    url(r'^evaluation/group_report/(\d+)/$',
+        korean_views.view_group_report,
+        name='evaluation_view_group_report'),
+
     url(r'^evaluation/team_report/$',
         korean_views.add_team_report,
         name='evaluation_add_team_report'),

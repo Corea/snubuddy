@@ -1,0 +1,50 @@
+{% extends "korean/base.html" %}
+
+{% load filters %}
+
+{% block content %}
+<div class="container">
+    <h1 class="page-header">{{ report.month }}월 {{ report.group.name }} 활동 평가서 <small>작성자: {{ report.user.profile.korean_name }}</small></h1>
+
+    <div class="alert alert-info">
+        <strong>적극성</strong> : 행사 기획 단계에서 얼마나 도움을 줬는가? <br>
+        <strong>참여도</strong> : 행사 참여를 열심히 하였는가?
+    </div>
+</div>
+
+
+</div>
+
+<div class="container">
+    <table class="table table-center table-condensed table-striped">
+        <thead>
+            <tr>
+                <th class="col-xs-2">Name</th>
+                <th class="col-xs-1">적극성</th>
+                <th class="col-xs-1">참여도</th>
+                <th class="col-xs-1">합계</th>
+                <th class="col-xs-1">Grade</th>
+                <th class="col-xs-6">Reason</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for evaluation in evaluations %}
+            <tr>
+                <td>{{ evaluation.user.profile.korean_name }}</td>
+                <td>{{ evaluation.score1 }}</td>
+                <td>{{ evaluation.score2 }}</td>
+                <td>{{ evaluation.score1|add:evaluation.score2 }}</td>
+                <td>
+                    {% if evaluation.score1|add:evaluation.score2 <= 4 %}D
+                    {% elif evaluation.score1|add:evaluation.score2 <= 6 %}C
+                    {% elif evaluation.score1|add:evaluation.score2 <= 8 %}B
+                    {% else %}A{% endif %}
+                </td>
+                <td>{{ evaluation.reason }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

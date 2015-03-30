@@ -5,13 +5,15 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden
 
-from base.templatetags.filters import is_team_leader, is_group_leader
+from base.templatetags.filters import (
+    is_team_leader, is_group_leader, is_group_subleader
+)
 
 from application.models import ApplicationForeigner
 from korean.models import (
     Team, UserTeam, BuddyGroup, UserGroup,
     PersonalEvent, GroupEvent, GroupAttend, TeamEvent, TeamAttend,
-    PersonalReport, TeamReport, TeamEvaluation
+    PersonalReport, TeamReport, TeamEvaluation, GroupReport, GroupEvaluation
 )
 from base.decorators import group_required
 
@@ -21,7 +23,7 @@ from korean.forms import (
     PersonalEventForm, GroupEventForm, TeamEventForm, PersonalReportForm
 )
 
-from korean import queries as korean_queries
+from korean.queries import *
 
 
 @login_required
@@ -44,8 +46,9 @@ def evaluation_status(request):
     attended_events = map(lambda x: ('Personal', x), list(personal_events)) + \
         map(lambda x: ('Group', x), list(group_attended_events)) + \
         map(lambda x: ('Team', x), list(team_attends))
-    attended_events = sorted(attended_events,
-        key=lambda x: x[1].start_date if x[0] != 'Team' else x[1].event.start_date)
+    attended_events = sorted(
+        attended_events,
+        key=lambda (x, y): y.start_date if x != 'Team' else y.event.start_date)
 
     # Reports
     personal_report = PersonalReport.objects.filter(
@@ -55,7 +58,7 @@ def evaluation_status(request):
     group_events = []
 
     if is_team_leader(request.user):
-        team = korean_queries.get_team_by_user(request.user)
+        team = get_team_by_user(request.user)
         team_events = TeamEvent.objects.filter(
             team=team).order_by('start_date')
         team_reports = TeamReport.objects.filter(
@@ -63,9 +66,12 @@ def evaluation_status(request):
         reports += map(lambda x: ('Team', x), team_reports)
 
     if is_group_leader(request.user):
+        group = get_buddygroup_by_user(request.user)
         group_events = GroupEvent.objects.filter(
-            group=korean_queries.get_buddygroup_by_user(request.user)
-        ).order_by('start_date')
+            group=group).order_by('start_date')
+        group_reports = GroupReport.objects.filter(
+            group=group, season=get_this_season())
+        reports += map(lambda x: ('Group', x), group_reports)
 
     reports = sorted(reports, key=lambda (x, y): (y.month, x))
 
@@ -85,8 +91,7 @@ def add_personal_activity(request):
     if request.method == 'POST' and form.is_valid():
         event = form.save(commit=False)
 
-        if korean_queries.exist_personal_report(
-                request.user, event.start_date.month):
+        if exist_personal_report(request.user, event.start_date.month):
             return render(request, 'error.html', {
                 'error': u'%s월 평가서를 이미 작성하셨습니다.' % event.start_date.month
             })
@@ -108,8 +113,7 @@ def remove_personal_activity(request, event_id):
     event = get_object_or_404(PersonalEvent, id=event_id)
 
     if event.user == request.user:
-        if korean_queries.exist_personal_report(
-                request.user, event.start_date.month):
+        if exist_personal_report(request.user, event.start_date.month):
             return render(request, 'error.html', {
                 'error': u'%s월 평가서를 이미 작성하셨습니다.' % event.start_date.month
             })
@@ -124,9 +128,9 @@ def remove_personal_activity(request, event_id):
 def add_group_activity(request):
     if not is_group_leader(request.user):
         return redirect(evaluation_status)
-    group = korean_queries.get_buddygroup_by_user(request.user)
+    group = get_buddygroup_by_user(request.user)
     members = map(lambda x: [x, False],
-                  sorted(korean_queries.get_member_by_buddygroup(group),
+                  sorted(get_member_by_buddygroup(group),
                          key=lambda x: x.profile.korean_name))
     checked_ids = map(int, request.POST.getlist('checked_ids'))
 
@@ -137,6 +141,10 @@ def add_group_activity(request):
     form = GroupEventForm(group, request.POST or None)
     if request.method == 'POST' and form.is_valid():
         event = form.save(commit=False)
+        if exist_group_report(request.user, event.start_date.month):
+            return render(request, 'error.html', {
+                'error': u'%s월 평가서를 이미 작성하셨습니다.' % event.start_date.month
+            })
         event.group = group
         event.save()
 
@@ -160,12 +168,17 @@ def modify_group_activity(request, event_id):
         return redirect(evaluation_status)
 
     event = get_object_or_404(GroupEvent, id=event_id)
-    if event.group != korean_queries.get_buddygroup_by_user(request.user):
+    if event.group != get_buddygroup_by_user(request.user):
         return redirect(evaluation_status)
 
-    group = korean_queries.get_buddygroup_by_user(request.user)
+    if exist_group_report(request.user, event.start_date.month):
+        return render(request, 'error.html', {
+            'error': u'%s월 평가서를 이미 작성하셨습니다.' % event.start_date.month
+        })
+
+    group = get_buddygroup_by_user(request.user)
     members = map(lambda x: [x, False],
-                  sorted(korean_queries.get_member_by_buddygroup(group),
+                  sorted(get_member_by_buddygroup(group),
                          key=lambda x: x.profile.korean_name))
     checked_ids = map(int, request.POST.getlist('checked_ids'))
 
@@ -201,9 +214,12 @@ def remove_group_activity(request, event_id):
     if not is_group_leader(request.user):
         return redirect(evaluation_status)
     event = get_object_or_404(GroupEvent, id=event_id)
-    # TODO: Make restriction by evaluation.
 
-    if event.group == korean_queries.get_buddygroup_by_user(request.user):
+    if event.group == get_buddygroup_by_user(request.user):
+        if exist_group_report(request.user, event.start_date.month):
+            return render(request, 'error.html', {
+                'error': u'%s월 평가서를 이미 작성하셨습니다.' % event.start_date.month
+            })
         GroupAttend.objects.filter(event=event).delete()
         event.delete()
 
@@ -216,11 +232,11 @@ def add_team_activity(request):
     if not is_team_leader(request.user):
         return redirect(evaluation_status)
     form = TeamEventForm(request.POST or None)
-    team = korean_queries.get_team_by_user(request.user)
+    team = get_team_by_user(request.user)
 
     if request.method == 'POST' and form.is_valid():
         event = form.save(commit=False)
-        if korean_queries.exist_team_report(team, event.start_date.month):
+        if exist_team_report(team, event.start_date.month):
             return render(request, 'error.html', {
                 'error': u'%s월 평가서를 이미 작성하셨습니다.' % event.start_date.month
             })
@@ -228,7 +244,7 @@ def add_team_activity(request):
         event.team = team
         event.save()
 
-        for user in korean_queries.get_korean_list():
+        for user in get_korean_list():
             score = int(request.POST.get('score_' + str(user.id), 0))
             if score == 0:
                 continue
@@ -240,8 +256,8 @@ def add_team_activity(request):
         return redirect(evaluation_status)
 
     koreans = {}
-    for user in korean_queries.get_korean_list():
-        team_name = korean_queries.get_team_name_by_user(user)
+    for user in get_korean_list():
+        team_name = get_team_name_by_user(user)
         if team_name == '':
             team_name = u'회장단'
 
@@ -267,10 +283,10 @@ def modify_team_activity(request, event_id):
         return redirect(evaluation_status)
 
     event = get_object_or_404(TeamEvent, id=event_id)
-    if event.team != korean_queries.get_team_by_user(request.user):
+    if event.team != get_team_by_user(request.user):
         return redirect(evaluation_status)
 
-    if korean_queries.exist_team_report(event.team, event.start_date.month):
+    if exist_team_report(event.team, event.start_date.month):
         return render(request, 'error.html', {
             'error': u'%s월 평가서를 이미 작성하셨습니다.' % event.start_date.month
         })
@@ -280,7 +296,7 @@ def modify_team_activity(request, event_id):
         TeamAttend.objects.filter(event=event).delete()
         event = form.save()
 
-        for user in korean_queries.get_korean_list():
+        for user in get_korean_list():
             score = int(request.POST.get('score_' + str(user.id), 0))
             if score == 0:
                 continue
@@ -292,8 +308,8 @@ def modify_team_activity(request, event_id):
         return redirect(evaluation_status)
 
     koreans = {}
-    for user in korean_queries.get_korean_list():
-        team_name = korean_queries.get_team_name_by_user(user)
+    for user in get_korean_list():
+        team_name = get_team_name_by_user(user)
         if team_name == '':
             team_name = u'회장단'
 
@@ -325,8 +341,8 @@ def remove_team_activity(request, event_id):
         return redirect(evaluation_status)
     event = get_object_or_404(TeamEvent, id=event_id)
 
-    if event.team == korean_queries.get_team_by_user(request.user):
-        if korean_queries.exist_team_report(event.team, event.start_date.month):
+    if event.team == get_team_by_user(request.user):
+        if exist_team_report(event.team, event.start_date.month):
             return render(request, 'error.html', {
                 'error': u'%s월 평가서를 이미 작성하셨습니다.' % event.start_date.month
             })
@@ -340,8 +356,8 @@ def remove_team_activity(request, event_id):
 @login_required
 @group_required('Korean')
 def add_personal_report(request):
-    month = korean_queries.get_target_month()
-    if korean_queries.exist_personal_report(request.user, month):
+    month = get_target_month()
+    if exist_personal_report(request.user, month):
         return render(request, 'error.html', {
             'error': u'이미 작성하셨습니다.'
         })
@@ -377,19 +393,89 @@ def view_personal_report(request, report_id):
 
 @login_required
 @group_required('Korean')
-def add_team_report(request):
-    if not is_team_leader(request.user):
+def add_group_report(request):
+    if not is_group_leader(request.user) and \
+            not is_group_subleader(request.user):
         return redirect(evaluation_status)
-    month = korean_queries.get_target_month()
-    team = korean_queries.get_team_by_user(request.user)
-    if korean_queries.exist_team_report(team, month):
+
+    month = get_target_month()
+    group = get_buddygroup_by_user(request.user)
+    if exist_group_report(request.user, month):
         return render(request, 'error.html', {
             'error': u'이미 작성하셨습니다.'
         })
 
     members = []
     valid = True
-    for user in korean_queries.get_member_by_team(team):
+    for user in get_member_by_buddygroup(group):
+        score1 = request.POST.get('score1_' + str(user.id), '')
+        score2 = request.POST.get('score2_' + str(user.id), '')
+        reason = request.POST.get('reason_' + str(user.id), u'')
+        error = u''
+
+        if request.method == 'POST' and \
+                score1 not in '012345' or score2 not in '012345':
+            error = u'점수를 선택해주세요.'
+            valid = False
+        members.append((user, score1, score2, reason, error))
+
+    if request.method == 'POST' and valid:
+        report = GroupReport.objects.create(
+            user=request.user,
+            group=group,
+            season=get_this_season(),
+            month=month)
+
+        for user, score1, score2, reason, _ in members:
+            evaluation = GroupEvaluation.objects.create(
+                report=report, user=user,
+                score1=int(score1), score2=int(score2), reason=reason)
+            evaluation.save()
+
+        return redirect(evaluation_status)
+
+    return render(request, 'evaluation/add_group_report.html', {
+        'month': month,
+        'members': members,
+    })
+
+
+@login_required
+@group_required('Korean')
+def view_group_report(request, id):
+    if not is_group_leader(request.user) and \
+            not is_group_subleader(request.user):
+        return redirect(evaluation_status)
+
+    report = get_object_or_404(GroupReport, id=id)
+    if report.user != request.user and \
+            not request.user.goups.filter(name='Admin').exists():
+        return redirect(evaluation_status)
+
+    evaluations = GroupEvaluation.objects.filter(
+        report=report).order_by('user__profile__korean_name')
+
+    return render(request, 'evaluation/view_group_report.html', {
+        'report': report,
+        'evaluations': evaluations,
+    })
+
+
+@login_required
+@group_required('Korean')
+def add_team_report(request):
+    if not is_team_leader(request.user):
+        return redirect(evaluation_status)
+    month = get_target_month()
+    team = get_team_by_user(request.user)
+    if exist_team_report(team, month):
+        return render(request, 'error.html', {
+            'error': u'이미 작성하셨습니다.'
+        })
+
+    members = []
+    valid = True
+    for user in get_member_by_team(team):
         grade = request.POST.get('grade_' + str(user.id), '')
         reason = request.POST.get('reason_' + str(user.id), u'')
         error = u''
@@ -434,19 +520,20 @@ def view_team_report(request, id):
         'evaluations': evaluations,
     })
 
+
 # LISTING PART
 @login_required
 @group_required('Admin')
 def korean_list(request):
-    users = korean_queries.get_korean_list('birth')
+    users = get_korean_list('birth')
     teams = Team.objects.filter(season=get_this_season())
     groups = BuddyGroup.objects.filter(season=get_this_season())
 
     infos = []
     for user in users:
         exist = has_matching(user)
-        userteam = korean_queries.get_userteam_by_user(user)
-        usergroup = korean_queries.get_usergroup_by_user(user)
+        userteam = get_userteam_by_user(user)
+        usergroup = get_usergroup_by_user(user)
         infos.append([user, exist, userteam, usergroup])
 
     return render(request, 'korean/korean_list.html', {
@@ -498,9 +585,9 @@ def make_member(request):
 
             for user in target_users:
                 if team_leader:
-                    korean_queries.make_team_leader(user)
+                    make_team_leader(user)
                 else:
-                    korean_queries.make_team_member(user, team)
+                    make_team_member(user, team)
         elif group or group_leader:
             # Group
             if group is not None:
@@ -508,9 +595,9 @@ def make_member(request):
 
             for user in target_users:
                 if group_leader:
-                    korean_queries.make_group_leader(user, group_leader)
+                    make_group_leader(user, group_leader)
                 else:
-                    korean_queries.make_group_member(user, group)
+                    make_group_member(user, group)
     except:
         pass
 
