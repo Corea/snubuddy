@@ -14,8 +14,8 @@
                     <th style="width: 40px">#</th>
                     <th style="width: 70px">Date</th>
                     <th style="width: 80px">Type</th>
-                    <th>Particulars</th>
-                    <th>Remarks</th>
+                    <th>Title</th>
+                    <th>Place</th>
                 </tr>
             </thead>
 
@@ -81,8 +81,9 @@
                 <tr>
                     <th style="width: 40px">#</th>
                     <th style="width: 80px">Date</th>
-                    <th>Particulars</th>
-                    <th>Remarks</th>
+                    <th>Title</th>
+                    <th>Place</th>
+                    <th>Language Exchange?</th>
                     <th>Photo</th>
                     <th>Action</th>
                 </tr>
@@ -95,6 +96,7 @@
                 <td>{{ event.start_date|date:"m.d" }}</td>
                 <td>{{ event.title }}</td>
                 <td>{{ event.get_place_type_display }} ({{ event.place }})</td>
+                <td>{% if event.is_language_exchange %}O{% endif %}</td>
                 <td><a href="{{ MEDIA_URL }}{{ event.photo }}">Photo</a></td>
                 <td><a href="/evaluation/personal_activity/remove/{{ event.id }}/" class="confirm-required">Remove</a></td>
             </tr>
@@ -113,9 +115,10 @@
                 <tr>
                     <th style="width: 40px">#</th>
                     <th style="width: 80px">Date</th>
-                    <th>Particulars</th>
+                    <th>Title</th>
                     <th>Host</th>
-                    <th>Remarks</th>
+                    <th>Place</th>
+                    <th>Lunch?</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -128,6 +131,7 @@
                     <td>{{ event.title }}</td>
                     <td>{{ event.host.profile.korean_name }}</td>
                     <td>{{ event.get_place_type_display }} ({{ event.place }})</td>
+                    <td>{% if event.is_lunch %}O{% endif %}</td>
                     <td>
                         <a href="/evaluation/group_activity/{{ event.id }}/">View/Modify</a>
                         <a href="/evaluation/group_activity/remove/{{ event.id }}/" class="confirm-required">Remove</a>
@@ -148,7 +152,7 @@
                 <tr>
                     <th style="width: 40px">#</th>
                     <th style="width: 80px">Date</th>
-                    <th>Particulars</th>
+                    <th>Title</th>
                     <th>Action</th>
                 </tr>
             </thead>

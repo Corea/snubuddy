@@ -16,12 +16,13 @@ from korean.models import (
 class PersonalEventForm(ModelForm):
     class Meta:
         model = PersonalEvent
-        fields = ('title', 'start_date', 'place', 'place_type', 'photo')
+        fields = ('title', 'start_date', 'place', 'place_type', 'photo', 'is_language_exchange')
         labels = {
-            'title': u'Particulars',
+            'title': u'Title',
             'start_date': u'Date',
-            'place': u'Remarks',
+            'place': u'Place',
             'place_type': u'Category',
+            'is_language_exchange': u'Language Exchange?'
         }
         help_texts = {
             'start_date': u'시작 날짜만 기입, ex) 2015-03-03',
@@ -48,13 +49,14 @@ class GroupEventForm(ModelForm):
 
     class Meta:
         model = GroupEvent
-        fields = ('title', 'start_date', 'host', 'place', 'place_type')
+        fields = ('title', 'start_date', 'host', 'place', 'place_type', 'is_lunch')
         labels = {
-            'title': u'Particulars',
+            'title': u'Title',
             'host': u'Host',
             'start_date': u'Date',
-            'place': u'Remarks',
+            'place': u'Place',
             'place_type': u'Category',
+            'is_lunch': u'Lunch Gathering?', 
         }
         help_texts = {
             'start_date': u'시작 날짜만 기입, ex) 2015-03-03',
@@ -76,7 +78,7 @@ class TeamEventForm(ModelForm):
         model = TeamEvent
         fields = ('title', 'start_date')
         labels = {
-            'title': u'Particulars',
+            'title': u'Title',
             'start_date': u'Date',
         }
         help_texts = {

@@ -24,6 +24,13 @@
                         {{ field }} I AM RETURNING BUDDY
                     </label>
                 </div>
+                {% elif field.name == 'is_lunch' %}
+                <div class="checkbox">
+                    <label>
+                        {{ field }} LUNCH GATHERING!
+                    </label>
+                </div>
+
                 {% else %}
                 {{ field|add_class:"form-control" }}
                 {% endif %}

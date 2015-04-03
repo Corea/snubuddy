@@ -24,6 +24,12 @@
                         {{ field }} I AM RETURNING BUDDY
                     </label>
                 </div>
+                {% elif field.name == 'is_language_exchange' %}
+                <div class="checkbox">
+                    <label>
+                        {{ field }} LANGUAGE EXCHANGE!
+                    </label>
+                </div>
                 {% else %}
                 {{ field|add_class:"form-control" }}
                 {% endif %}

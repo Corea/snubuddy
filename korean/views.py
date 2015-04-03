@@ -250,8 +250,8 @@ def add_team_activity(request):
         event.save()
 
         for user in get_korean_list():
-            score = int(request.POST.get('score_' + str(user.id), 0))
-            if score == 0:
+            score = float(request.POST.get('score_' + str(user.id), 0))
+            if score < 1e-8:
                 continue
 
             attend = TeamAttend.objects.create(
@@ -305,8 +305,8 @@ def modify_team_activity(request, event_id):
         event = form.save()
 
         for user in get_korean_list():
-            score = int(request.POST.get('score_' + str(user.id), 0))
-            if score == 0:
+            score = float(request.POST.get('score_' + str(user.id), 0))
+            if score < 1e-8:
                 continue
 
             attend = TeamAttend.objects.create(
@@ -392,7 +392,7 @@ def add_personal_report(request):
 def view_personal_report(request, report_id):
     report = get_object_or_404(PersonalReport, id=report_id)
     if report.user != request.user and \
-            not request.user.goups.filter(name='Admin').exists():
+            not request.user.groups.filter(name='Admin').exists():
         return redirect(evaluation_status)
 
     return render(request, 'evaluation/view_personal_report.html', {
@@ -452,13 +452,9 @@ def add_group_report(request):
 @login_required
 @group_required('Korean')
 def view_group_report(request, id):
-    if not is_group_leader(request.user) and \
-            not is_group_subleader(request.user):
-        return redirect(evaluation_status)
-
     report = get_object_or_404(GroupReport, id=id)
     if report.user != request.user and \
-            not request.user.goups.filter(name='Admin').exists():
+            not request.user.groups.filter(name='Admin').exists():
         return redirect(evaluation_status)
 
     evaluations = GroupEvaluation.objects.filter(
@@ -611,3 +607,33 @@ def make_member(request):
         pass
 
     return redirect(korean_list)
+
+
+@login_required
+@group_required('Admin')
+def secret(request):
+    personal_events = PersonalEvent.objects.filter(
+        season=get_this_season()
+    ).order_by('start_date', 'user__profile__korean_name')
+    group_events = GroupEvent.objects.filter(
+        group__season=get_this_season()
+    ).order_by('start_date', 'group__name')
+    team_events = TeamEvent.objects.filter(
+        team__season=get_this_season()
+    ).order_by('start_date', 'team__name')
+
+    personal_reports = PersonalReport.objects.filter(
+        season=get_this_season()).order_by('month', 'user__profile__korean_name')
+    team_reports = TeamReport.objects.filter(
+        season=get_this_season()).order_by('month')
+    group_reports = GroupReport.objects.filter(
+        season=get_this_season()).order_by('month', 'group__name')
+
+    return render(request, 'evaluation/secret.html', {
+        'personal_events': personal_events,
+        'group_events': group_events,
+        'team_events': team_events,
+        'personal_reports': personal_reports,
+        'group_reports': group_reports,
+        'team_reports': team_reports,
+    })

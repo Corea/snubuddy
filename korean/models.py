@@ -81,6 +81,7 @@ class PersonalEvent(models.Model):
     place_type = models.IntegerField(choices=PLACE_CHOICES, null=False)
     photo = models.FileField(
         max_length=1024, upload_to='image/', null=False)
+    is_language_exchange = models.BooleanField(default=False, null=False)
 
     def __unicode__(self):
         arr = [self.user.profile.korean_name,
@@ -112,6 +113,7 @@ class GroupEvent(models.Model):
     start_date = models.DateField(null=False)
     place = models.CharField(max_length=256, null=False)
     place_type = models.IntegerField(choices=PLACE_CHOICES, null=False)
+    is_lunch = models.BooleanField(default=False, null=False)
 
     def __unicode__(self):
         arr = [unicode(self.group),
@@ -146,7 +148,7 @@ class TeamEvent(models.Model):
 class TeamAttend(models.Model):
     event = models.ForeignKey(TeamEvent, null=False)
     user = models.ForeignKey(User, null=False)
-    score = models.IntegerField(null=False)
+    score = models.FloatField(null=False)
 
     def __unicode__(self):
         return u' '.join([self.user.profile.korean_name,
@@ -176,6 +178,11 @@ class TeamReport(models.Model):
     season = models.ForeignKey(Season, null=False)
     month = models.IntegerField(null=False)
     created_datetime = models.DateTimeField(auto_now_add=True)
+
+    def __unicode__(self):
+        return u' '.join([unicode(self.team),
+                          unicode(self.season),
+                          unicode(self.month) + u'월'])
 
 
 class TeamEvaluation(models.Model):
@@ -209,6 +216,12 @@ class GroupReport(models.Model):
     month = models.IntegerField(null=False)
     created_datetime = models.DateTimeField(auto_now_add=True)
 
+    def __unicode__(self):
+        return u' '.join([self.user.profile.korean_name,
+                          unicode(self.group),
+                          unicode(self.season),
+                          unicode(self.month) + u'월'])
+
 
 class GroupEvaluation(models.Model):
     report = models.ForeignKey(GroupReport, null=False)
@@ -216,3 +229,7 @@ class GroupEvaluation(models.Model):
     score1 = models.IntegerField(null=False)
     score2 = models.IntegerField(null=False)
     reason = models.CharField(max_length=512, null=False, blank=True)
+
+    def __unicode__(self):
+        return u' '.join([unicode(self.report),
+                          self.user.profile.korean_name])

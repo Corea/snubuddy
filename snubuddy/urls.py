@@ -128,4 +128,8 @@ urlpatterns = patterns(
     url(r'^evaluation/team_report/(\d+)/$',
         korean_views.view_team_report,
         name='evaluation_view_team_report'),
+
+    url(r'^evaluation/SECRET/$',
+        korean_views.secret,
+        name='evaluation_secret'),
 )
