@@ -82,6 +82,7 @@ class PersonalEvent(models.Model):
     photo = models.FileField(
         max_length=1024, upload_to='image/', null=False)
     is_language_exchange = models.BooleanField(default=False, null=False)
+    is_confirm = models.BooleanField(default=False, null=False)
 
     def __unicode__(self):
         arr = [self.user.profile.korean_name,
@@ -114,6 +115,7 @@ class GroupEvent(models.Model):
     place = models.CharField(max_length=256, null=False)
     place_type = models.IntegerField(choices=PLACE_CHOICES, null=False)
     is_lunch = models.BooleanField(default=False, null=False)
+    is_confirm = models.BooleanField(default=False, null=False)
 
     def __unicode__(self):
         arr = [unicode(self.group),
