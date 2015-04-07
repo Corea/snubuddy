@@ -132,4 +132,13 @@ urlpatterns = patterns(
     url(r'^evaluation/SECRET/$',
         korean_views.secret,
         name='evaluation_secret'),
+    url(r'^evaluation/check/(\d+)/$',
+        korean_views.check_evaluation,
+        name='evaluation_check_evaluation'),
+    url(r'^evaluation/personal_confirm/(\d+)/$',
+        korean_views.personal_confirm,
+        name='evaluation_personal_confirm'),
+    url(r'^evaluation/group_confirm/(\d+)/$',
+        korean_views.group_confirm,
+        name='evaluation_group_confirm'),
 )

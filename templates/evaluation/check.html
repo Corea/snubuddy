@@ -1,0 +1,89 @@
+{% extends "evaluation/base.html" %}
+
+{% block body_class %}korean{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="page-header">사회봉사 업무</h1>
+    <a href="./?picture=true">사진 모두 열기(데이터 폭탄!)</a>
+</div>
+
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading"><h3 class="panel-title">Personal Activities</h3></div>
+
+        <table class="table table-condensed table-striped table-center">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Date</th>
+                    <th>Particulars</th>
+                    <th>Remarks</th>
+                    <th>Photo</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for event in personal_events %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ event.user.profile.korean_name }}</td>
+                    <td>{{ event.start_date|date:"m.d" }}</td>
+                    <td>{{ event.title }}</td>
+                    <td>{{ event.get_place_type_display }} ({{ event.place }})</td>
+                    <td>
+                        {% if picture %}
+                        <img width="300px" src="{{ MEDIA_URL }}{{ event.photo }}">
+                        {% else %}
+                        <a href="{{ MEDIA_URL }}{{ event.photo }}">View</a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/evaluation/personal_confirm/{{ event.id }}/">{% if event.is_confirm %}확인 취소{% else %}확인{% endif %}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading"><h3 class="panel-title">Group Activities</h3></div>
+
+        <table class="table table-condensed table-striped table-center">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Group</th>
+                    <th>Date</th>
+                    <th>Particulars</th>
+                    <th>Remarks</th>
+                    <th>Participants</th>
+                    <th>Lunch?</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for event, koreans in group_infos %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ event.group.name }}</td>
+                    <td>{{ event.start_date|date:"m.d" }}</td>
+                    <td>{{ event.title }}</td>
+                    <td>{{ event.get_place_type_display }} ({{ event.place }})</td>
+                    <td>{% for korean in koreans %}{{ korean.user.profile.korean_name }} {% endfor %}</td>
+                    <td>{% if event.is_lunch %}O{% endif %}</td>
+                    <td>
+                        <a href="/evaluation/group_confirm/{{ event.id }}/">{% if event.is_confirm %}확인 취소{% else %}확인{% endif %}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

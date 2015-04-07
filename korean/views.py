@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import re
 from itertools import groupby
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 
 from base.templatetags.filters import (
     is_team_leader, is_group_leader, is_group_subleader
@@ -619,13 +620,13 @@ def make_member(request):
 @group_required('Admin')
 def secret(request):
     picture = (request.GET.get('picture', None) == 'true')
-        
+
     personal_events = PersonalEvent.objects.filter(
         season=get_this_season()
     ).order_by('start_date', 'user__profile__korean_name')
     group_events = GroupEvent.objects.filter(
         group__season=get_this_season()
-    ).order_by('start_date', 'group__name')
+    ).order_by('group__name', 'start_date')
     team_events = TeamEvent.objects.filter(
         team__season=get_this_season()
     ).order_by('start_date', 'team__name')
@@ -646,3 +647,51 @@ def secret(request):
         'group_reports': group_reports,
         'team_reports': team_reports,
     })
+
+
+@login_required
+@group_required('Treasurer')
+def check_evaluation(request, odd):
+    odd = int(odd) % 2 
+    picture = (request.GET.get('picture', None) == 'true')
+    groups = BuddyGroup.objects.filter(season=get_this_season())
+
+    personal_events = []
+    group_events = []
+    for group in groups:
+        if int(re.search(r'\d+', group.name).group()) % 2 == odd:
+            users = map(lambda x: x.user, UserGroup.objects.filter(group=group))
+            personal_events += PersonalEvent.objects.filter(
+                season=get_this_season(), user__in=users).order_by(
+                'user__profile__korean_name', 'start_date')
+            group_events += GroupEvent.objects.filter(
+                group=group).order_by('start_date')
+
+    group_infos = map(
+        lambda x: (x, GroupAttend.objects.filter(event=x)), group_events)
+
+    return render(request, 'evaluation/check.html', {
+        'picture': picture,
+        'personal_events': personal_events,
+        'group_infos': group_infos,
+    })
+
+
+@login_required
+@group_required('Treasurer')
+def personal_confirm(request, id):
+    personal_event = get_object_or_404(PersonalEvent, id=id)
+    personal_event.is_confirm = not personal_event.is_confirm
+    personal_event.save()
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+@login_required
+@group_required('Treasurer')
+def group_confirm(request, id):
+    group_event = get_object_or_404(GroupEvent, id=id)
+    group_event.is_confirm = not group_event.is_confirm
+    group_event.save()
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
