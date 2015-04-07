@@ -50,6 +50,12 @@ def evaluation_status(request):
         attended_events,
         key=lambda (x, y): y.start_date if x != 'Team' else y.event.start_date)
 
+    personal_type = map(lambda x: x.place_type, personal_events)
+    group_type = map(lambda x: x.place_type, group_attended_events)
+    personal_scores = [personal_type.count(i) for i in range(4)]
+    group_scores = [group_type.count(i) for i in range(5)]
+    team_score = sum(map(lambda x: x.score, team_attends))
+
     # Reports
     personal_report = PersonalReport.objects.filter(
         user=request.user, season=get_this_season())
@@ -76,6 +82,9 @@ def evaluation_status(request):
     reports = sorted(reports, key=lambda (x, y): (y.month, x))
 
     return render(request, 'evaluation/status.html', {
+        'personal_scores': personal_scores,
+        'group_scores': group_scores,
+        'team_score': team_score,
         'attended_events': attended_events,
         'personal_events': personal_events,
         'team_events': team_events,
@@ -511,11 +520,8 @@ def add_team_report(request):
 
 
 @login_required
-@group_required('Korean')
+@group_required('Admin')
 def view_team_report(request, id):
-    if not is_team_leader(request.user):
-        return redirect(evaluation_status)
-
     report = get_object_or_404(TeamReport, id=id)
     evaluations = TeamEvaluation.objects.filter(
         report=report).order_by('user__profile__korean_name')
@@ -612,6 +618,8 @@ def make_member(request):
 @login_required
 @group_required('Admin')
 def secret(request):
+    picture = (request.GET.get('picture', None) == 'true')
+        
     personal_events = PersonalEvent.objects.filter(
         season=get_this_season()
     ).order_by('start_date', 'user__profile__korean_name')
@@ -630,6 +638,7 @@ def secret(request):
         season=get_this_season()).order_by('month', 'group__name')
 
     return render(request, 'evaluation/secret.html', {
+        'picture': picture,
         'personal_events': personal_events,
         'group_events': group_events,
         'team_events': team_events,

@@ -190,7 +190,7 @@ class TeamEvaluation(models.Model):
     B = 1
     C = 2
     D = 3
-    LEADER_CHOICES = (
+    GRADE_CHOICES = (
         (A, u'A'),
         (B, u'B'),
         (C, u'C'),
@@ -199,14 +199,14 @@ class TeamEvaluation(models.Model):
 
     report = models.ForeignKey(TeamReport, null=False)
     user = models.ForeignKey(User, null=False)
-    grade = models.IntegerField(choices=LEADER_CHOICES, null=False)
+    grade = models.IntegerField(choices=GRADE_CHOICES, null=False)
     reason = models.CharField(max_length=512, null=False, blank=True)
 
     def __unicode__(self):
         return u' '.join([self.user.profile.korean_name,
                           unicode(self.report.season),
                           unicode(self.report.month) + u'월',
-                          unicode(grade)])
+                          unicode(dict(self.GRADE_CHOICES)[self.grade])])
 
 
 class GroupReport(models.Model):

@@ -17,6 +17,8 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
+STATIC_ROOT = 'static_collect'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'upload')
 
 
 
@@ -27,9 +29,8 @@ STATICFILES_DIRS = (
 SECRET_KEY = 'SECRET_KEY'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-TEMPLATE_DEBUG = True
+DEBUG = False
+TEMPLATE_DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -43,7 +44,12 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'mathfilters',
+
     'base',
+    'application',
+    'matching',
+    'korean',
 )
 
 
@@ -81,13 +87,13 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = None
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 EMAIL_HOST = 'smtp.gmail.com'
@@ -102,7 +108,8 @@ EMAIL_HOST_PASSWORD = 'EMAIL_PASSWORD'
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/upload/'
 
-LOGIN_URL = '/login/'
-LOGOUT_URL = '/logout/'
+LOGIN_URL = '/account/login/'
+LOGOUT_URL = '/account/logout/'
 LOGIN_REDIRECT_URL = '/'

@@ -1,10 +1,55 @@
 {% extends "evaluation/base.html" %}
 
 {% load filters %}
+{% load mathfilters %}
 
 {% block content %}
 <div class="container">
     <h2>Summary</h2>
+
+    <!--
+    <div class="panel panel-default">
+        <div class="panel-heading"><h3 class="panel-title">Score</h3></div>
+
+        <table class="table table-condensed table-striped table-center">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>교내</th>
+                    <th>학교 근처</th>
+                    <th>수도권</th>
+                    <th>수도권 외</th>
+                    <th>한국인 모임</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <th>개인</th>
+                    <td>{{ personal_scores.0|mul:0.5 }}</td>
+                    <td>{{ personal_scores.1|mul:0.5 }}</td>
+                    <td>{{ personal_scores.2|mul:1 }}</td>
+                    <td>{{ personal_scores.3|mul:2 }}</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>조</th>
+                    <td>{{ group_scores.0|mul:0.5 }}</td>
+                    <td>{{ group_scores.1|mul:1 }}</td>
+                    <td>{{ group_scores.2|mul:2 }}</td>
+                    <td>{{ group_scores.3|mul:3 }}</td>
+                    <td>{{ group_scores.4|mul:0.5 }}</td>
+                </tr>
+                <tr>
+                    <th>팀</th>
+                    <td colspan="5">{{ team_score }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    -->
+
+ 
     <div class="panel panel-default">
         <div class="panel-heading"><h3 class="panel-title">Activities</h3></div>
 
@@ -16,6 +61,7 @@
                     <th style="width: 80px">Type</th>
                     <th>Title</th>
                     <th>Place</th>
+                    <th>Score</th>
                 </tr>
             </thead>
 
@@ -28,11 +74,13 @@
                     <td>{{ type }}</td>
                     <td>{{ event.event.title }}</td>
                     <td></td>
+                    <td>{{ event.score }}</td>
                     {% else %}
                     <td>{{ event.start_date|date:"m.d" }}</td>
                     <td>{{ type }}</td>
                     <td>{{ event.title }}</td>
                     <td>{{ event.get_place_type_display }} ({{ event.place }})</td>
+                    <td></td>
                     {% endif %}
                 </tr>
             {% endfor %}
