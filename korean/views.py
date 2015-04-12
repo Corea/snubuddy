@@ -548,7 +548,7 @@ def korean_list(request):
         usergroup = get_usergroup_by_user(user)
         infos.append([user, exist, userteam, usergroup])
 
-    return render(request, 'admin/korean_list.html', {
+    return render(request, 'foradmin/korean_list.html', {
         'infos': infos,
         'teams': teams,
         'groups': groups
@@ -569,7 +569,7 @@ def full_list(request):
                       for x in usergroups]
         infos.append([group, inner_info])
 
-    return render(request, 'admin/full_list.html', {
+    return render(request, 'foradmin/full_list.html', {
         'infos': infos
     })
 
@@ -639,7 +639,7 @@ def secret(request):
     group_reports = GroupReport.objects.filter(
         season=get_this_season()).order_by('month', 'group__name')
 
-    return render(request, 'admin/secret.html', {
+    return render(request, 'foradmin/secret.html', {
         'picture': picture,
         'personal_events': personal_events,
         'group_events': group_events,
@@ -828,7 +828,7 @@ def ranking_score(request):
 
     score_sum = sorted(score_sum.items(), key=lambda x: -x[1][-1])
 
-    return render(request, 'admin/ranking.html', {
+    return render(request, 'foradmin/ranking.html', {
         'score_info': score_info,
         'score_sum': score_sum,
     })
