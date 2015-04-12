@@ -4,7 +4,8 @@ from django.contrib import admin
 from korean.models import (
     Team, UserTeam, BuddyGroup, UserGroup,
     PersonalEvent, GroupEvent, GroupAttend, TeamEvent, TeamAttend,
-    PersonalReport, TeamReport, TeamEvaluation, GroupReport, GroupEvaluation
+    PersonalReport, TeamReport, TeamEvaluation, GroupReport, GroupEvaluation,
+    MonthlyScore
 )
 
 
@@ -23,3 +24,4 @@ admin.site.register(GroupReport)
 admin.site.register(GroupEvaluation)
 admin.site.register(TeamReport)
 admin.site.register(TeamEvaluation)
+admin.site.register(MonthlyScore)

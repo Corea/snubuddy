@@ -235,3 +235,29 @@ class GroupEvaluation(models.Model):
     def __unicode__(self):
         return u' '.join([unicode(self.report),
                           self.user.profile.korean_name])
+
+
+class MonthlyScore(models.Model):
+    user = models.ForeignKey(User, null=False)
+    season = models.ForeignKey(Season, null=False)
+    month = models.IntegerField(null=False)
+    count_personal_0 = models.IntegerField(default=0, null=False)
+    count_personal_1 = models.IntegerField(default=0, null=False)
+    count_personal_2 = models.IntegerField(default=0, null=False)
+    count_personal_3 = models.IntegerField(default=0, null=False)
+    count_group_0 = models.IntegerField(default=0, null=False)
+    count_group_1 = models.IntegerField(default=0, null=False)
+    count_group_2 = models.IntegerField(default=0, null=False)
+    count_group_3 = models.IntegerField(default=0, null=False)
+    count_group_4 = models.IntegerField(default=0, null=False)
+    score_personal = models.FloatField(default=0, null=False)
+    score_group = models.FloatField(default=0, null=False)
+    score_team = models.FloatField(default=0, null=False)
+    score_full = models.FloatField(default=0, null=False)
+
+    def __unicode__(self):
+        return u' '.join([self.user.profile.korean_name,
+                          unicode(self.month) + u'월',
+                          unicode(self.score_personal),
+                          unicode(self.score_group),
+                          unicode(self.score_team)])

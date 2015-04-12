@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+from operator import mul
 from itertools import groupby
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
@@ -14,7 +15,8 @@ from application.models import ApplicationForeigner
 from korean.models import (
     Team, UserTeam, BuddyGroup, UserGroup,
     PersonalEvent, GroupEvent, GroupAttend, TeamEvent, TeamAttend,
-    PersonalReport, TeamReport, TeamEvaluation, GroupReport, GroupEvaluation
+    PersonalReport, TeamReport, TeamEvaluation, GroupReport, GroupEvaluation,
+    MonthlyScore
 )
 from base.decorators import group_required
 
@@ -51,11 +53,10 @@ def evaluation_status(request):
         attended_events,
         key=lambda (x, y): y.start_date if x != 'Team' else y.event.start_date)
 
-    personal_type = map(lambda x: x.place_type, personal_events)
-    group_type = map(lambda x: x.place_type, group_attended_events)
-    personal_scores = [personal_type.count(i) for i in range(4)]
-    group_scores = [group_type.count(i) for i in range(5)]
-    team_score = sum(map(lambda x: x.score, team_attends))
+    # Scores
+    score_info = MonthlyScore.objects.filter(
+        user=request.user, season=get_this_season()).order_by('month')
+    score_sum = sum(map(lambda x: x.score_full, score_info))
 
     # Reports
     personal_report = PersonalReport.objects.filter(
@@ -83,9 +84,8 @@ def evaluation_status(request):
     reports = sorted(reports, key=lambda (x, y): (y.month, x))
 
     return render(request, 'evaluation/status.html', {
-        'personal_scores': personal_scores,
-        'group_scores': group_scores,
-        'team_score': team_score,
+        'score_info': score_info,
+        'score_sum': score_sum,
         'attended_events': attended_events,
         'personal_events': personal_events,
         'team_events': team_events,
@@ -548,7 +548,7 @@ def korean_list(request):
         usergroup = get_usergroup_by_user(user)
         infos.append([user, exist, userteam, usergroup])
 
-    return render(request, 'korean/korean_list.html', {
+    return render(request, 'admin/korean_list.html', {
         'infos': infos,
         'teams': teams,
         'groups': groups
@@ -569,7 +569,7 @@ def full_list(request):
                       for x in usergroups]
         infos.append([group, inner_info])
 
-    return render(request, 'korean/full_list.html', {
+    return render(request, 'admin/full_list.html', {
         'infos': infos
     })
 
@@ -626,7 +626,8 @@ def secret(request):
     ).order_by('start_date', 'user__profile__korean_name')
     group_events = GroupEvent.objects.filter(
         group__season=get_this_season()
-    ).order_by('group__name', 'start_date')
+    ).order_by('start_date')
+    # ).order_by('group__name', 'start_date')
     team_events = TeamEvent.objects.filter(
         team__season=get_this_season()
     ).order_by('start_date', 'team__name')
@@ -638,7 +639,7 @@ def secret(request):
     group_reports = GroupReport.objects.filter(
         season=get_this_season()).order_by('month', 'group__name')
 
-    return render(request, 'evaluation/secret.html', {
+    return render(request, 'admin/secret.html', {
         'picture': picture,
         'personal_events': personal_events,
         'group_events': group_events,
@@ -679,6 +680,7 @@ def check_evaluation(request, odd):
 
 @login_required
 @group_required('Treasurer')
+@group_required('Admin')
 def personal_confirm(request, id):
     personal_event = get_object_or_404(PersonalEvent, id=id)
     personal_event.is_confirm = not personal_event.is_confirm
@@ -689,9 +691,144 @@ def personal_confirm(request, id):
 
 @login_required
 @group_required('Treasurer')
+@group_required('Admin')
 def group_confirm(request, id):
     group_event = get_object_or_404(GroupEvent, id=id)
     group_event.is_confirm = not group_event.is_confirm
     group_event.save()
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+@login_required
+@group_required('Admin')
+def calculate_score(request, month):
+    personal_base = [0.5, 0.5, 1, 2]
+    personal_limit = [3, 3, 3, 2]
+    group_base = [0.5, 1, 2, 3, 0.5]
+    group_limit = [3, 3, 6, 6, 0.5]
+    
+    users = get_korean_list()
+    for user in users:
+        personal_events = PersonalEvent.objects.filter(
+            user=user,
+            season=get_this_season(),
+            start_date__month=month,
+            is_confirm=True,
+            is_language_exchange=False)
+
+        temp = {}
+        for event in personal_events:
+            date = event.start_date
+            if temp.has_key(date):
+                temp[date] = max(temp[date], event.place_type)
+            else:
+                temp[date] = event.place_type
+
+        personal_place_types = temp.values() 
+        personal_place_types += map(
+            lambda x: x.place_type,
+            PersonalEvent.objects.filter(
+                user=user,
+                season=get_this_season(),
+                start_date__month=month,
+                is_confirm=True,
+                is_language_exchange=True))
+
+        group_events = GroupAttend.objects.filter(
+            user=user,
+            event__group__season=get_this_season(),
+            event__start_date__month=month,
+            event__is_confirm=True,
+            event__is_lunch=False)
+
+        temp = {}
+        for attend in group_events:
+            event = attend.event
+            date = event.start_date
+            if temp.has_key(date):
+                temp[date] = max(temp[date], event.place_type)
+            else:
+                temp[date] = event.place_type
+
+        group_place_types = temp.values() 
+        group_place_types += map(
+            lambda x: x.event.place_type,
+            GroupAttend.objects.filter(
+                user=user,
+                event__group__season=get_this_season(),
+                event__start_date__month=month,
+                event__is_confirm=True,
+                event__is_lunch=True))
+
+        count_personals = [personal_place_types.count(x) for x in range(4)]
+        count_groups = [group_place_types.count(x) for x in range(5)]
+        
+        personal_score = map(lambda (x, y): x*y,
+                             zip(personal_base, count_personals))
+        personal_score = sum(map(min, zip(personal_limit, personal_score)))
+
+        group_score = map(lambda (x, y): x*y,
+                          zip(group_base, count_groups))
+        group_score = sum(map(min, zip(group_limit, group_score)))
+        team_score = sum(map(lambda x: x.score, TeamAttend.objects.filter(
+            user=user,
+            event__start_date__month=month,
+            event__team__season=get_this_season())))
+
+        MonthlyScore.objects.filter(
+            user=user, season=get_this_season(), month=month).delete()
+        MonthlyScore.objects.create(
+            user=user,
+            season=get_this_season(),
+            month=month,
+            count_personal_0=count_personals[0],
+            count_personal_1=count_personals[1],
+            count_personal_2=count_personals[2],
+            count_personal_3=count_personals[3],
+            count_group_0=count_groups[0],
+            count_group_1=count_groups[1],
+            count_group_2=count_groups[2],
+            count_group_3=count_groups[3],
+            count_group_4=count_groups[4],
+            score_personal=personal_score,
+            score_group=group_score,
+            score_team=team_score,
+            score_full=personal_score+group_score+team_score).save()
+
+    return redirect(evaluation_status)
+
+
+@login_required
+@group_required('Admin')
+def ranking_score(request):
+    months = sorted(list(set(map(lambda x: x.month, MonthlyScore.objects.filter(
+        season=get_this_season())))))
+
+    score_sum = {}
+    score_info = []
+    for month in months:
+        infos = MonthlyScore.objects.filter(
+            season=get_this_season(),
+            month=month).order_by('-score_full')
+        score_info.append(infos)
+
+        for item in infos:
+            if score_sum.has_key(item.user):
+                score_sum[item.user][0] += item.score_personal
+                score_sum[item.user][1] += item.score_group
+                score_sum[item.user][2] += item.score_team
+                score_sum[item.user][3] += item.score_full
+            else:
+                score_sum[item.user] = [
+                    item.score_personal,
+                    item.score_group,
+                    item.score_team,
+                    item.score_full]
+
+    score_sum = sorted(score_sum.items(), key=lambda x: -x[1][-1])
+
+    return render(request, 'admin/ranking.html', {
+        'score_info': score_info,
+        'score_sum': score_sum,
+    })

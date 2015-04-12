@@ -1,0 +1,71 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Ranking</h2>
+    
+    <div class="panel panel-default">
+        <div class="panel-heading"><h3 class="panel-title">Summary</h3></div>
+
+        <table class="table table-condensed table-striped table-center">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>이름</th>
+                    <th>개인</th>
+                    <th>조</th>
+                    <th>팀</th>
+                    <th>합</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for user, score in score_sum %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ user.profile.korean_name }}</td>
+                    <td>{{ score.0 }}</td>
+                    <td>{{ score.1 }}</td>
+                    <td>{{ score.2 }}</td>
+                    <td>{{ score.3 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    
+
+    {% for infos in score_info %}
+    <div class="panel panel-default">
+        <div class="panel-heading"><h3 class="panel-title">{{ infos.0.month }}월</h3></div>
+
+        <table class="table table-condensed table-striped table-center">
+            <thead>
+                <tr>
+                    <th>월</th>
+                    <th>개인</th>
+                    <th>조</th>
+                    <th>팀</th>
+                    <th>합</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for info in infos %}
+                {% if info.score_full > 0 %}
+                <tr>
+                    <td>{{ info.user.profile.korean_name }}</td>
+                    <td>{{ info.score_personal }}</td>
+                    <td>{{ info.score_group }}</td>
+                    <td>{{ info.score_team }}</td>
+                    <td>{{ info.score_full }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

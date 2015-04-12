@@ -141,4 +141,11 @@ urlpatterns = patterns(
     url(r'^evaluation/group_confirm/(\d+)/$',
         korean_views.group_confirm,
         name='evaluation_group_confirm'),
+
+    url(r'^evaluation/calculate/(\d+)/$',
+        korean_views.calculate_score,
+        name='evaluation_calculate_score'),
+    url(r'^evaluation/ranking/$',
+        korean_views.ranking_score,
+        name='evaluation_ranking_score'),
 )

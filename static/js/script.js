@@ -19,11 +19,9 @@ $(document).ready(function() {
         'body.application #NavApplication',
         'body.matching #NavMatching',
         'body.home #NavHome',
-        'body.personal #NavPersonal',
-        'body.group #NavGroup',
-        'body.team #NavTeam',
         'body.setting #NavSetting',
         'body.korean #NavKorean',
+        'body.admin #NavAdmin',
     ];
 
     $(selector_list.join()).addClass('active');

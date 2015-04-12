@@ -74,13 +74,20 @@
                                 <li><a href="/evaluation/team_activity/">팀 활동 추가</a></li>
                                 <li><a href="/evaluation/team_report/">팀 활동 평가서 작성</a></li>
                                 {% endif %}
+                            </ul>
+                        </li>
+                        {% endif %}
 
-                                {% if user|has_group:"Admin" %}
+                        {% if user|has_group:"Admin" %}
+                        <li id="NavAdmin" class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Admin <span class="caret"></span></a>
+
+                            <ul class="dropdown-menu" role="menu">
                                 <li><a href="/evaluation/SECRET/">평가서 전체 보기</a></li>
+                                <li><a href="/evaluation/ranking/">사봉점수 순위 보기</a></li>
                                 <li class="divider"></li>
                                 <li><a href="/korean/korean_list/">한국인 명단</a></li>
                                 <li><a href="/korean/full_list/">전체 명단</a></li>
-                                {% endif %}
                             </ul>
                         </li>
                         {% endif %}

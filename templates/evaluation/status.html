@@ -7,47 +7,33 @@
 <div class="container">
     <h2>Summary</h2>
 
-    <!--
     <div class="panel panel-default">
-        <div class="panel-heading"><h3 class="panel-title">Score</h3></div>
+        <div class="panel-heading"><h3 class="panel-title">Score : {{ score_sum }}점</h3></div>
 
         <table class="table table-condensed table-striped table-center">
             <thead>
                 <tr>
-                    <th></th>
-                    <th>교내</th>
-                    <th>학교 근처</th>
-                    <th>수도권</th>
-                    <th>수도권 외</th>
-                    <th>한국인 모임</th>
+                    <th>월</th>
+                    <th>개인</th>
+                    <th>조</th>
+                    <th>팀</th>
+                    <th>합</th>
                 </tr>
             </thead>
 
             <tbody>
+                {% for monthly_score in score_info %}
                 <tr>
-                    <th>개인</th>
-                    <td>{{ personal_scores.0|mul:0.5 }}</td>
-                    <td>{{ personal_scores.1|mul:0.5 }}</td>
-                    <td>{{ personal_scores.2|mul:1 }}</td>
-                    <td>{{ personal_scores.3|mul:2 }}</td>
-                    <td></td>
+                    <th>{{ monthly_score.month }}월</th>
+                    <td>{{ monthly_score.score_personal|floatformat }}</td>
+                    <td>{{ monthly_score.score_group|floatformat }}</td>
+                    <td>{{ monthly_score.score_team|floatformat:"-2" }}</td>
+                    <td>{{ monthly_score.score_full|floatformat:"-2" }}</td>
                 </tr>
-                <tr>
-                    <th>조</th>
-                    <td>{{ group_scores.0|mul:0.5 }}</td>
-                    <td>{{ group_scores.1|mul:1 }}</td>
-                    <td>{{ group_scores.2|mul:2 }}</td>
-                    <td>{{ group_scores.3|mul:3 }}</td>
-                    <td>{{ group_scores.4|mul:0.5 }}</td>
-                </tr>
-                <tr>
-                    <th>팀</th>
-                    <td colspan="5">{{ team_score }}</td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
-    -->
 
  
     <div class="panel panel-default">
@@ -80,7 +66,7 @@
                     <td>{{ type }}</td>
                     <td>{{ event.title }}</td>
                     <td>{{ event.get_place_type_display }} ({{ event.place }})</td>
-                    <td></td>
+                    <td>{% if event.is_confirm %}O{% else %}X{% endif %}</td>
                     {% endif %}
                 </tr>
             {% endfor %}
