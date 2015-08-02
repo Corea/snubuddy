@@ -5,7 +5,8 @@ from django.contrib.auth.decorators import login_required
 
 from base.queries import get_this_season
 from base.decorators import (
-    group_required, reverse_group_required, new_buddy_required)
+    korean_required, authorize_required,
+    new_buddy_required, foreigner_required)
 from base.models import Language
 
 from matching.models import Matching, MatchingLanguage, MatchingConnection
@@ -16,7 +17,7 @@ from matching import queries as matching_queries
 
 
 @login_required
-@reverse_group_required('Guest')
+@authorize_required
 def list(request):
     sort_ftn = lambda x: (matching_queries.count_matched_buddies(x) /
                           x.max_buddy_number)
@@ -29,8 +30,7 @@ def list(request):
 
 
 @login_required
-# @group_required('Korean')
-@group_required('Admin')
+@korean_required
 def register(request):
     form = MatchingKoreanForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
@@ -61,7 +61,7 @@ def register(request):
 
 
 @login_required
-@reverse_group_required('Guest')
+@authorize_required
 def view(request, id):
     matching = get_object_or_404(Matching, id=id)
 
@@ -78,8 +78,7 @@ def view(request, id):
 
 @login_required
 @new_buddy_required
-@group_required('Admin')
-# @group_required('Foreigner')
+@foreigner_required
 def register_foreigner(request, id):
     korean_matching = get_object_or_404(Matching, id=id)
 
@@ -125,8 +124,7 @@ def register_foreigner(request, id):
 
 @login_required
 @new_buddy_required
-@group_required('Admin')
-# @group_required('Foreigner')
+@foreigner_required
 def register_full(request):
     return render(request, 'matching/register_full.html', {})
 

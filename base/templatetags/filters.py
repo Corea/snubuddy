@@ -10,6 +10,7 @@ from application.models import ApplicationForeigner
 from matching.models import MatchingConnection
 from korean.models import UserTeam, UserGroup
 from base.queries import get_this_season
+from base.models import UserSeason
 
 
 register = template.Library()
@@ -39,10 +40,42 @@ def add_disabled(value):
     return mark_safe(string.replace('>', ' disabled>'))
 
 
+@register.filter
+def is_guest(user):
+    return not UserSeason.objects.filter(
+        user=user, season=get_this_season()).exists()
+
 
 @register.filter
-def has_group(user, group_name):
-    return user.groups.filter(name=group_name).exists()
+def is_admin(user):
+    user_season = UserSeason.objects.filter(
+        user=user, season=get_this_season())
+    if not user_season.exists():
+        return False
+
+    return (user_season[0].user_type == UserSeason.ADMIN)
+
+
+@register.filter
+def is_korean(user):
+    user_season = UserSeason.objects.filter(
+        user=user, season=get_this_season())
+    if not user_season.exists():
+        return False
+
+    return (user_season[0].user_type in (UserSeason.ADMIN, 
+                                         UserSeason.KOREAN))
+
+
+
+@register.filter
+def is_foreigner(user):
+    user_season = UserSeason.objects.filter(
+        user=user, season=get_this_season())
+    if not user_season.exists():
+        return False
+
+    return (user_season[0].user_type == UserSeason.FOREIGNER)
 
 
 @register.filter

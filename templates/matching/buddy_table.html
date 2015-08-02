@@ -56,7 +56,7 @@
         <td>{{ matching.self_introduction }}</td>
     </tr>
 
-    {% if matching.user|has_group:"Korean" %}
+    {% if matching.user|is_korean %}
     <tr>
         <th>Max # of Buddies</th>
         <td>{{ matching|get_count_matched_buddies }} / <strong>Max : {{ matching.max_buddy_number }}</strong></td>
@@ -76,10 +76,10 @@
     <tr>
         <td class="delete">{% ifequal user matching.user %}<a href="/matching/delete/{{ matching.id }}/" class="btn btn-danger">Delete</a>{% endifequal %}</td>
         <td class="be_a_buddy">
-        {% if matching.user|has_group:"Korean" %}
-        {% if not user|has_group:"Korean" %}
+        {% if matching.user|is_korean %}
+        {% if not user|is_korean %}
         {% if user|is_new_buddy %}
-            <!--<a href="/matching/register/{{ matching.id }}/" class="btn btn-info">Be a Buddy</a>-->
+            <a href="/matching/register/{{ matching.id }}/" class="btn btn-info">Be a Buddy</a>
         {% endif %}
         {% endif %}
         {% endif %}

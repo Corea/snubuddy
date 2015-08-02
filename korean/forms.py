@@ -16,7 +16,8 @@ from korean.models import (
 class PersonalEventForm(ModelForm):
     class Meta:
         model = PersonalEvent
-        fields = ('title', 'start_date', 'place', 'place_type', 'photo', 'is_language_exchange')
+        fields = ('title', 'start_date', 'place', 'place_type',
+                  'photo', 'is_language_exchange')
         labels = {
             'title': u'Title',
             'start_date': u'Date',
@@ -49,7 +50,8 @@ class GroupEventForm(ModelForm):
 
     class Meta:
         model = GroupEvent
-        fields = ('title', 'start_date', 'host', 'place', 'place_type', 'is_lunch')
+        fields = ('title', 'start_date', 'host', 'place',
+                  'place_type', 'is_lunch')
         labels = {
             'title': u'Title',
             'host': u'Host',

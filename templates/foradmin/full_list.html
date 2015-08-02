@@ -23,7 +23,7 @@
 
         <tbody>
             {% for usergroup, personal_buddies in inner_info %}
-            <tr {% if usergroup.user|has_group:"Korean" %}class="korean"{% endif %}>
+            <tr {% if usergroup.user|is_korean %}class="korean"{% endif %}>
                 <td>Korean</td>
                 <td>{{ usergroup.user.first_name }} {{ usergroup.user.last_name }}</td>
                 <td>{{ usergroup.user.email }}</td>
@@ -34,7 +34,7 @@
                 <td></td>
             </tr>
             {% for user, application in personal_buddies %}
-            <tr {% if user|has_group:"Korean" %}class="korean"{% endif %}>
+            <tr {% if user|is_korean %}class="korean"{% endif %}>
                 <td>{% if application.returning %}Return{% else %}NEW{% endif %}</td>
                 <td>{{ user.first_name }} {{ user.last_name }}</td>
                 <td>{{ user.email }}</td>

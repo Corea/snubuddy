@@ -5,7 +5,9 @@ from operator import mul
 from itertools import groupby
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
+from django.http import (
+    HttpResponse, HttpResponseForbidden, HttpResponseRedirect
+)
 
 from base.templatetags.filters import (
     is_team_leader, is_group_leader, is_group_subleader
@@ -18,7 +20,7 @@ from korean.models import (
     PersonalReport, TeamReport, TeamEvaluation, GroupReport, GroupEvaluation,
     MonthlyScore
 )
-from base.decorators import group_required
+from base.decorators import korean_required, admin_required
 
 from base.queries import get_this_season, get_user
 from matching.queries import get_personal_buddies_by_user, has_matching
@@ -30,7 +32,7 @@ from korean.queries import *
 
 
 @login_required
-@group_required('Korean')
+@korean_required
 def evaluation_status(request):
     # Events
     personal_events = PersonalEvent.objects.filter(
@@ -95,7 +97,7 @@ def evaluation_status(request):
 
 
 @login_required
-@group_required('Korean')
+@korean_required
 def add_personal_activity(request):
     form = PersonalEventForm(request.POST or None, request.FILES or None)
     if request.method == 'POST' and form.is_valid():
@@ -118,7 +120,7 @@ def add_personal_activity(request):
 
 # ACTIVITY PART
 @login_required
-@group_required('Korean')
+@korean_required
 def remove_personal_activity(request, event_id):
     event = get_object_or_404(PersonalEvent, id=event_id)
 
@@ -134,7 +136,7 @@ def remove_personal_activity(request, event_id):
 
 
 @login_required
-@group_required('Korean')
+@korean_required
 def add_group_activity(request):
     if not is_group_leader(request.user):
         return redirect(evaluation_status)
@@ -172,7 +174,7 @@ def add_group_activity(request):
 
 
 @login_required
-@group_required('Korean')
+@korean_required
 def modify_group_activity(request, event_id):
     if not is_group_leader(request.user):
         return redirect(evaluation_status)
@@ -224,7 +226,7 @@ def modify_group_activity(request, event_id):
 
 
 @login_required
-@group_required('Korean')
+@korean_required
 def remove_group_activity(request, event_id):
     if not is_group_leader(request.user):
         return redirect(evaluation_status)
@@ -242,7 +244,7 @@ def remove_group_activity(request, event_id):
 
 
 @login_required
-@group_required('Korean')
+@korean_required
 def add_team_activity(request):
     if not is_team_leader(request.user):
         return redirect(evaluation_status)
@@ -292,7 +294,7 @@ def add_team_activity(request):
 
 
 @login_required
-@group_required('Korean')
+@korean_required
 def modify_team_activity(request, event_id):
     if not is_team_leader(request.user):
         return redirect(evaluation_status)
@@ -354,7 +356,7 @@ def modify_team_activity(request, event_id):
 
 
 @login_required
-@group_required('Korean')
+@korean_required
 def remove_team_activity(request, event_id):
     if not is_team_leader(request.user):
         return redirect(evaluation_status)
@@ -373,7 +375,7 @@ def remove_team_activity(request, event_id):
 
 # REPORTING PART
 @login_required
-@group_required('Korean')
+@korean_required
 def add_personal_report(request):
     month = get_target_month()
     if exist_personal_report(request.user, month):
@@ -398,7 +400,7 @@ def add_personal_report(request):
 
 
 @login_required
-@group_required('Korean')
+@korean_required
 def view_personal_report(request, report_id):
     report = get_object_or_404(PersonalReport, id=report_id)
     if report.user != request.user and \
@@ -411,7 +413,7 @@ def view_personal_report(request, report_id):
 
 
 @login_required
-@group_required('Korean')
+@korean_required
 def add_group_report(request):
     if not is_group_leader(request.user) and \
             not is_group_subleader(request.user):
@@ -460,7 +462,7 @@ def add_group_report(request):
 
 
 @login_required
-@group_required('Korean')
+@korean_required
 def view_group_report(request, id):
     report = get_object_or_404(GroupReport, id=id)
     if report.user != request.user and \
@@ -477,7 +479,7 @@ def view_group_report(request, id):
 
 
 @login_required
-@group_required('Korean')
+@korean_required
 def add_team_report(request):
     if not is_team_leader(request.user):
         return redirect(evaluation_status)
@@ -521,7 +523,7 @@ def add_team_report(request):
 
 
 @login_required
-@group_required('Admin')
+@admin_required
 def view_team_report(request, id):
     report = get_object_or_404(TeamReport, id=id)
     evaluations = TeamEvaluation.objects.filter(
@@ -535,7 +537,7 @@ def view_team_report(request, id):
 
 # LISTING PART
 @login_required
-@group_required('Admin')
+@admin_required
 def korean_list(request):
     users = get_korean_list('birth')
     teams = Team.objects.filter(season=get_this_season())
@@ -556,7 +558,7 @@ def korean_list(request):
 
 
 @login_required
-@group_required('Admin')
+@admin_required
 def full_list(request):
     season = get_this_season()
     groups = BuddyGroup.objects.filter(season=get_this_season())
@@ -575,7 +577,7 @@ def full_list(request):
 
 
 @login_required
-@group_required('Admin')
+@admin_required
 def make_member(request):
     if request.method != 'POST':
         return redirect(korean_list)
@@ -617,27 +619,39 @@ def make_member(request):
 
 
 @login_required
-@group_required('Admin')
-def secret(request):
+@admin_required
+def secret(request, month=None):
     picture = (request.GET.get('picture', None) == 'true')
 
     personal_events = PersonalEvent.objects.filter(
         season=get_this_season()
     ).order_by('start_date', 'user__profile__korean_name')
+
     group_events = GroupEvent.objects.filter(
         group__season=get_this_season()
     ).order_by('start_date')
     # ).order_by('group__name', 'start_date')
+
     team_events = TeamEvent.objects.filter(
         team__season=get_this_season()
     ).order_by('start_date', 'team__name')
 
     personal_reports = PersonalReport.objects.filter(
-        season=get_this_season()).order_by('month', 'user__profile__korean_name')
+        season=get_this_season()
+    ).order_by('month', 'user__profile__korean_name')
     team_reports = TeamReport.objects.filter(
         season=get_this_season()).order_by('month')
     group_reports = GroupReport.objects.filter(
         season=get_this_season()).order_by('month', 'group__name')
+
+    if month:
+        personal_events = personal_events.filter(start_date__month=month)
+        group_events = group_events.filter(start_date__month=month)
+        team_events = team_events.filter(start_date__month=month)
+
+        personal_reports = personal_reports.filter(month=month)
+        team_reports = team_reports.filter(month=month)
+        group_reports = group_reports.filter(month=month)
 
     return render(request, 'foradmin/secret.html', {
         'picture': picture,
@@ -651,7 +665,8 @@ def secret(request):
 
 
 @login_required
-@group_required('Treasurer')
+@admin_required
+# @group_required('Treasurer')
 def check_evaluation(request, odd):
     odd = int(odd) % 2 
     picture = (request.GET.get('picture', None) == 'true')
@@ -663,9 +678,12 @@ def check_evaluation(request, odd):
         if int(re.search(r'\d+', group.name).group()) % 2 == odd:
             users = map(lambda x: x.user, UserGroup.objects.filter(group=group))
             personal_events += PersonalEvent.objects.filter(
-                season=get_this_season(), user__in=users).order_by(
+                start_date__month=get_target_month(),
+                season=get_this_season(),
+                user__in=users).order_by(
                 'user__profile__korean_name', 'start_date')
             group_events += GroupEvent.objects.filter(
+                start_date__month=get_target_month(),
                 group=group).order_by('start_date')
 
     group_infos = map(
@@ -679,8 +697,8 @@ def check_evaluation(request, odd):
 
 
 @login_required
-@group_required('Treasurer')
-@group_required('Admin')
+@admin_required
+# @group_required('Treasurer')
 def personal_confirm(request, id):
     personal_event = get_object_or_404(PersonalEvent, id=id)
     personal_event.is_confirm = not personal_event.is_confirm
@@ -690,8 +708,8 @@ def personal_confirm(request, id):
 
 
 @login_required
-@group_required('Treasurer')
-@group_required('Admin')
+@admin_required
+# @group_required('Treasurer')
 def group_confirm(request, id):
     group_event = get_object_or_404(GroupEvent, id=id)
     group_event.is_confirm = not group_event.is_confirm
@@ -701,7 +719,7 @@ def group_confirm(request, id):
 
 
 @login_required
-@group_required('Admin')
+@admin_required
 def calculate_score(request, month):
     personal_base = [0.5, 0.5, 1, 2]
     personal_limit = [3, 3, 3, 2]
@@ -800,7 +818,7 @@ def calculate_score(request, month):
 
 
 @login_required
-@group_required('Admin')
+@admin_required
 def ranking_score(request):
     months = sorted(list(set(map(lambda x: x.month, MonthlyScore.objects.filter(
         season=get_this_season())))))

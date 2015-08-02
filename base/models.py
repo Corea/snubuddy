@@ -53,3 +53,22 @@ class UserProfile(models.Model):
 
 
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
+
+
+class UserSeason(models.Model):
+    ADMIN = 'A'
+    KOREAN = 'K'
+    FOREIGNER = 'F'
+    USER_TYPE_CHOICES = (
+        (ADMIN, u'운영진'),
+        (KOREAN, u'한국인 버디'),
+        (FOREIGNER, u'외국인 버디'),
+    )
+
+    user = models.ForeignKey(User, null=False)
+    season = models.ForeignKey(Season, null=False)
+    user_type = models.CharField(max_length=1, choices=USER_TYPE_CHOICES, null=False)
+
+    def __unicode__(self):
+        return u'%s - %s %s' % (self.user.profile, self.season,
+            dict(self.USER_TYPE_CHOICES)[self.user_type])

@@ -3,7 +3,9 @@
 from datetime import datetime, timedelta
 
 from django.contrib.auth.models import User, Group
+from django.db.models import Q
 
+from base.models import UserSeason
 from korean.models import (
     Team, UserTeam, BuddyGroup, UserGroup,
     PersonalReport, TeamReport, GroupReport
@@ -16,7 +18,9 @@ def get_korean_list(sort_option=''):
     if sort_option == 'birth':
         sort_key = (lambda x: (x.profile.birth.month, x.profile.birth.day))
 
-    users = Group.objects.get(name='Korean').user_set.all()
+    users = map(lambda x: x.user, UserSeason.objects.filter(
+        Q(season=get_this_season()),
+        Q(user_type=UserSeason.KOREAN) | Q(user_type=UserSeason.ADMIN)))
     users = sorted(users, key=sort_key)
     return users
 
@@ -99,7 +103,7 @@ def make_group_leader(user, leader_type):
 
 # Report
 def get_target_month():
-    return (datetime.now().date() - timedelta(days=14)).month
+    return (datetime.now().date() - timedelta(days=1)).month
 
 
 def exist_personal_report(user, month):

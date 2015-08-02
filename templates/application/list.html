@@ -9,15 +9,15 @@
             <tr>
                 <th>#</th>
                 <th>Name</th>
-                <th>E-mail</th>
+                <!--<th>E-mail</th>-->
                 <th>Gender</th>
                 <th>Birth</th>
                 <th>Nationality</th>
                 <th>SNU No.</th>
-                <th>Facebook Info</th>
+                <!--<th>Facebook Info</th>-->
                 <th>Returning</th>
                 <th>Matching</th>
-                <th>Major</th>
+                <!--<th>Major</th>-->
                 <th>Action</th>
             </tr>
         </thead>
@@ -27,17 +27,17 @@
         <tr>
             <td>{{ forloop.counter }}</td>
             <td>{{ application.user.first_name }} {{ application.user.last_name }}</td>
-            <td>{{ application.user.email }}</td>
+            <!--<td>{{ application.user.email }}</td>-->
             <td>{{ application.user.profile.get_gender_display }}</td>
             <td>{{ application.user.profile.birth|date:"y/m/d" }}</td>
             <td>{{ application.user.profile.country }}</td>
             <td>{{ application.snu_id }}</td>
-            <td title="{{application.fb_name}}">{{ application.fb_email }}</td>
+            <!--<td title="{{application.fb_name}}">{{ application.fb_email }}</td>-->
             <td>{% if application.returning %}O{% endif %}</td>
             <td>{% if matching %}O{% endif %}</td>
-            <td>{{ matching.major }}</td>
+            <!--<td>{{ matching.major }}</td>-->
             <td>
-                {% if not application.user|has_group:"Foreigner" %}<a href="/application/accept/{{ application.id }}/" class="btn btn-sm btn-primary">Accept</a>{% endif %}
+                {% if not application.user|is_foreigner %}<a href="/application/accept/{{ application.id }}/" class="btn btn-sm btn-primary">Accept</a>{% endif %}
             </td>
         </tr>
         {% endfor %}

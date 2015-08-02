@@ -5,8 +5,9 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden
 
+from base.models import UserSeason
 from base.queries import get_this_season
-from base.decorators import group_required
+from base.decorators import guest_required, admin_required
 
 from application.models import ApplicationForeigner
 from application.forms import ApplicationForeignerForm
@@ -15,7 +16,6 @@ from matching.models import Matching
 
 
 @login_required
-@group_required('Admin')
 def index(request):
     if request.user.groups.filter(name='Admin').exists():
         return redirect(list)
@@ -25,7 +25,7 @@ def index(request):
 
 
 @login_required
-@group_required('Admin')
+@admin_required
 def list(request):
     season = get_this_season()
 
@@ -46,18 +46,18 @@ def list(request):
 
 
 @login_required
-@group_required('Admin')
+@admin_required
 def accept(request, application_id):
     application = ApplicationForeigner.objects.get(id=application_id)
-    user = application.user
-    user.groups.add(Group.objects.get(name='Foreigner'))
-    user.groups.remove(Group.objects.get(name='Guest'))
+    UserSeason.objects.create(
+        user=application.user,
+        season=application.season,
+        user_type=UserSeason.FOREIGNER).save()
     return redirect(list)
 
 
 @login_required
-# @group_required('Guest')
-@group_required('Admin')
+@guest_required
 def register(request):
     form = ApplicationForeignerForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
@@ -81,7 +81,6 @@ def register(request):
 
 
 @login_required
-# @group_required('Guest')
-@group_required('Admin')
+@guest_required
 def register_finish(request):
     return render(request, 'application/register_finish.html', {})

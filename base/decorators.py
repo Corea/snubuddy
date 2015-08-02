@@ -2,6 +2,8 @@
 
 from django.http import HttpResponseRedirect
 
+from base.queries import get_this_season
+from base.models import UserSeason
 from application.models import ApplicationForeigner
 
 
@@ -18,29 +20,78 @@ def new_buddy_required(function):
     return wrap
 
 
-def group_required(group_name):
-    def group_required_decorator(function):
-        def wrap(request, *args, **kwargs):
-            if request.user.groups.filter(name=group_name).exists():
-                return function(request, *args, **kwargs)
-            else:
-                return HttpResponseRedirect('/')
+def foreigner_required(function):
+    def wrap(request, *args, **kwargs):
+        user_season = UserSeason.objects.filter(
+            user=request.user, season=get_this_season())
+        if not user_season.exists():
+            return HttpResponseRedirect('/')
 
-        wrap.__doc__ = function.__doc__
-        wrap.__name__ = function.__name__
-        return wrap
-    return group_required_decorator
+        if user_season[0].user_type == UserSeason.FOREIGNER:
+            return function(request, *args, **kwargs)
+        else:
+            return HttpResponseRedirect('/')
+
+    wrap.__doc__ = function.__doc__
+    wrap.__name__ = function.__name__
+    return wrap
 
 
-def reverse_group_required(group_name):
-    def reverse_group_required_decorator(function):
-        def wrap(request, *args, **kwargs):
-            if not request.user.groups.filter(name=group_name).exists():
-                return function(request, *args, **kwargs)
-            else:
-                return HttpResponseRedirect('/')
+def korean_required(function):
+    def wrap(request, *args, **kwargs):
+        user_season = UserSeason.objects.filter(
+            user=request.user, season=get_this_season())
+        if not user_season.exists():
+            return HttpResponseRedirect('/')
 
-        wrap.__doc__ = function.__doc__
-        wrap.__name__ = function.__name__
-        return wrap
-    return reverse_group_required_decorator
+        if user_season[0].user_type in (UserSeason.ADMIN, UserSeason.KOREAN):
+            return function(request, *args, **kwargs)
+        else:
+            return HttpResponseRedirect('/')
+
+    wrap.__doc__ = function.__doc__
+    wrap.__name__ = function.__name__
+    return wrap
+
+
+def admin_required(function):
+    def wrap(request, *args, **kwargs):
+        user_season = UserSeason.objects.filter(
+            user=request.user, season=get_this_season())
+        if not user_season.exists():
+            return HttpResponseRedirect('/')
+
+        if user_season[0].user_type == UserSeason.ADMIN:
+            return function(request, *args, **kwargs)
+        else:
+            return HttpResponseRedirect('/')
+
+    wrap.__doc__ = function.__doc__
+    wrap.__name__ = function.__name__
+    return wrap
+
+
+def guest_required(function):
+    def wrap(request, *args, **kwargs):
+        if not UserSeason.objects.filter(
+                user=request.user, season=get_this_season()).exists():
+            return function(request, *args, **kwargs)
+        else:
+            return HttpResponseRedirect('/')
+
+    wrap.__doc__ = function.__doc__
+    wrap.__name__ = function.__name__
+    return wrap
+
+
+def authorize_required(function):
+    def wrap(request, *args, **kwargs):
+        if UserSeason.objects.filter(
+                user=request.user, season=get_this_season()).exists():
+            return function(request, *args, **kwargs)
+        else:
+            return HttpResponseRedirect('/')
+
+    wrap.__doc__ = function.__doc__
+    wrap.__name__ = function.__name__
+    return wrap
