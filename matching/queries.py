@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from base.models import UserSeason
 from matching.models import Matching, MatchingConnection, MatchingLanguage
 
 from base import queries as base_queries
@@ -12,8 +13,11 @@ def get_personal_buddies(matching):
 
 def get_korean_matching_list():
     matching_list = Matching.objects.filter(
-        user__groups__name='Korean',
         season=base_queries.get_this_season()).order_by('id')
+    matching_list = filter(
+        lambda x: UserSeason.objects.get(
+            user=x.user).user_type in (UserSeason.KOREAN, UserSeason.ADMIN),
+        matching_list)
 
     return matching_list
 

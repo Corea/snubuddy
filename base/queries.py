@@ -2,7 +2,7 @@
 
 from django.contrib.auth.models import User, Group
 
-from base.models import Season, Country, Language
+from base.models import Season, Country, Language, UserSeason
 
 
 def get_this_season():
@@ -14,7 +14,11 @@ def get_user(user_id):
 
 
 def is_korean(user):
-    return user.groups.filter(name='Korean').exists()
+    user_season = UserSeason.groups.filter(
+        user=user, season=get_this_season())
+    if user_season.exists():
+        return user_season.user_type in (UserSeason.KOREAN, UserSeason.ADMIN)
+    return False
 
 
 def get_country(country_id):

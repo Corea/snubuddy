@@ -103,7 +103,7 @@ def make_group_leader(user, leader_type):
 
 # Report
 def get_target_month():
-    return (datetime.now().date() - timedelta(days=1)).month
+    return (datetime.now().date() - timedelta(days=7)).month
 
 
 def exist_personal_report(user, month):

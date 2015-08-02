@@ -7,7 +7,6 @@ from StringIO import StringIO
 
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required
 from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponse, HttpResponseForbidden
@@ -27,7 +26,6 @@ def register(request):
         form.save()
         user = authenticate(username=form.cleaned_data['username'],
                             password=form.cleaned_data['password1'])
-        user.groups.add(Group.objects.get(name='Guest'))
         login(request, user)
         return redirect(index)
 

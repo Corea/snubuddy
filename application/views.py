@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden
 
@@ -17,11 +16,10 @@ from matching.models import Matching
 
 @login_required
 def index(request):
-    if request.user.groups.filter(name='Admin').exists():
-        return redirect(list)
-    if request.user.groups.filter(name='Guest').exists():
+    user_season = UserSeason.objects.filter(user=request.user)
+    if not user_season.exists():
         return redirect(register)
-    return redirect('/')
+    return redirect(list)
 
 
 @login_required
