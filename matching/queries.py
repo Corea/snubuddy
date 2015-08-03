@@ -15,8 +15,9 @@ def get_korean_matching_list():
     matching_list = Matching.objects.filter(
         season=base_queries.get_this_season()).order_by('id')
     matching_list = filter(
-        lambda x: UserSeason.objects.get(
-            user=x.user).user_type in (UserSeason.KOREAN, UserSeason.ADMIN),
+        lambda x: UserSeason.objects.filter(
+                user=x.user, season=base_queries.get_this_season()
+            )[0].user_type in (UserSeason.KOREAN, UserSeason.ADMIN),
         matching_list)
 
     return matching_list
