@@ -14,10 +14,10 @@ def get_user(user_id):
 
 
 def is_korean(user):
-    user_season = UserSeason.groups.filter(
+    user_season = UserSeason.objects.filter(
         user=user, season=get_this_season())
     if user_season.exists():
-        return user_season.user_type in (UserSeason.KOREAN, UserSeason.ADMIN)
+        return user_season[0].user_type in (UserSeason.KOREAN, UserSeason.ADMIN)
     return False
 
 

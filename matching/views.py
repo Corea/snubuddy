@@ -32,6 +32,7 @@ def list(request):
 @login_required
 @korean_required
 def register(request):
+    return redirect(list)
     form = MatchingKoreanForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
         matching_queries.delete_matching_by_user(request.user)
@@ -76,6 +77,7 @@ def view(request, id):
     })
 
 
+@korean_required
 @login_required
 @new_buddy_required
 @foreigner_required
@@ -122,6 +124,7 @@ def register_foreigner(request, id):
     })
 
 
+@korean_required
 @login_required
 @new_buddy_required
 @foreigner_required
@@ -129,6 +132,8 @@ def register_full(request):
     return render(request, 'matching/register_full.html', {})
 
 
+@korean_required
+@foreigner_required
 @login_required
 def delete(request, id):
     matching = get_object_or_404(Matching, id=id)
@@ -140,6 +145,8 @@ def delete(request, id):
     return redirect(list)
 
 
+@korean_required
+@foreigner_required
 @login_required
 def delete_bye(request, id):
     matching = get_object_or_404(Matching, id=id)

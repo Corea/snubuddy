@@ -16,8 +16,8 @@
                 <th>Gender</th>
                 <th>Birth</th>
                 <th>Nationality</th>
-                <th>SNU No.</th>
-                <th>Facebook Info</th>
+<!--                <th>SNU No.</th>
+                <th>Facebook Info</th>-->
             </tr>
         </thead>
 
@@ -30,8 +30,8 @@
                 <td>{{ usergroup.user.profile.get_gender_display }}</td>
                 <td>{{ usergroup.user.profile.birth|date:"y/m/d" }}</td>
                 <td>{{ usergroup.user.profile.country }}</td>
-                <td></td>
-                <td></td>
+<!--                <td></td>
+                <td></td>-->
             </tr>
             {% for user, application in personal_buddies %}
             <tr {% if user|is_korean %}class="korean"{% endif %}>
@@ -41,8 +41,8 @@
                 <td>{{ user.profile.get_gender_display }}</td>
                 <td>{{ user.profile.birth|date:"y/m/d" }}</td>
                 <td>{{ user.profile.country }}</td>
-                <td>{{ application.snu_id }}</td>
-                <td title="{{ application.fb_name }}">{{ application.fb_email }}</td>
+<!--                <td>{{ application.snu_id }}</td>
+                <td title="{{ application.fb_name }}">{{ application.fb_email }}</td>-->
             </tr>
             {% endfor %}
             {% endfor %}

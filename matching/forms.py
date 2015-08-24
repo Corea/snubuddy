@@ -14,7 +14,7 @@ class LanguageWidget(forms.Widget):
 
     def render(self, name, value, attrs=None):
         context = {
-            'language_list': Language.objects.all()
+            'language_list': Language.objects.order_by('name')
         }
         return mark_safe(render_to_string(self.template_name, context))
 

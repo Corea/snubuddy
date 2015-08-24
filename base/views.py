@@ -24,10 +24,10 @@ def register(request):
 
     if request.method == 'POST' and form.is_valid():
         form.save()
-        user = authenticate(username=form.cleaned_data['username'],
-                            password=form.cleaned_data['password1'])
-        login(request, user)
-        return redirect(index)
+        #user = authenticate(username=form.cleaned_data['username'],
+        #                    password=form.cleaned_data['password1'])
+        #login(request, user)
+        return redirect('/account/login/')
 
     return render(request, 'account/register.html', {
         'form': form

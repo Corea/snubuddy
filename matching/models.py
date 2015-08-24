@@ -26,6 +26,7 @@ class Matching(models.Model):
     gender_preference = models.CharField(
         max_length=1, choices=GENDER_CHOICES, null=True)
     max_buddy_number = models.IntegerField(null=True)
+    created_on = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
         return u'%s %s' % (self.user.first_name, self.user.last_name)

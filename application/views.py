@@ -16,7 +16,8 @@ from matching.models import Matching
 
 @login_required
 def index(request):
-    user_season = UserSeason.objects.filter(user=request.user)
+    user_season = UserSeason.objects.filter(
+        user=request.user, season=get_this_season())
     if not user_season.exists():
         return redirect(register)
     return redirect(list)
