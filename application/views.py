@@ -8,8 +8,8 @@ from base.models import UserSeason
 from base.queries import get_this_season
 from base.decorators import guest_required, admin_required
 
-from application.models import ApplicationForeigner
-from application.forms import ApplicationForeignerForm
+from .models import ApplicationForeigner
+from .forms import ApplicationForeignerForm
 
 from matching.models import Matching
 
@@ -30,7 +30,8 @@ def list(request):
 
     application_infos = []
     application_list = ApplicationForeigner.objects.filter(
-        season=season).order_by('id')
+        season=season,
+        is_removed=False).order_by('id')
     for application in application_list:
         matching = Matching.objects.filter(
             user=application.user,
@@ -60,9 +61,13 @@ def accept(request, application_id):
 def register(request):
     form = ApplicationForeignerForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
-        ApplicationForeigner.objects.filter(
+        applications = ApplicationForeigner.objects.filter(
             user=request.user,
-            season=get_this_season()).delete()
+            season=get_this_season(),
+            is_removed=False)
+        for application in applications:
+            application.is_removed = True
+            application.save()
         application = form.save(commit=False)
         application.user = request.user
         application.season = get_this_season()
@@ -71,7 +76,8 @@ def register(request):
 
     application_exist = ApplicationForeigner.objects.filter(
         user=request.user,
-        season=get_this_season()).count() > 0
+        season=get_this_season(),
+        is_removed=False).count() > 0
 
     return render(request, 'application/register.html', {
         'form': form,

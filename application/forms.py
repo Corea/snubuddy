@@ -8,7 +8,7 @@ from application.models import ApplicationForeigner
 class ApplicationForeignerForm(ModelForm):
     class Meta:
         model = ApplicationForeigner
-        exclude = ('user', 'season')
+        exclude = ('user', 'season', 'is_removed')
         labels = {
             'snu_id': 'SNU Member No.',
             'fb_name': 'Facebook Name',
