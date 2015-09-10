@@ -5,11 +5,10 @@ from datetime import date
 from django import forms
 from django.forms import ModelForm, Textarea
 from django.contrib.admin.widgets import AdminFileWidget
-
 from django.contrib.auth.models import User
-from korean.models import (
-    UserGroup, PersonalEvent, GroupEvent, TeamEvent,
-    PersonalReport
+
+from .models import (
+    UserGroup, PersonalEvent, GroupEvent, TeamEvent, PersonalReport
 )
 
 

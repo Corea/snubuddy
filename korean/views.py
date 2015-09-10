@@ -3,6 +3,7 @@
 import re
 from operator import mul
 from itertools import groupby
+
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import (
@@ -14,7 +15,7 @@ from base.templatetags.filters import (
 )
 
 from application.models import ApplicationForeigner
-from korean.models import (
+from .models import (
     Team, UserTeam, BuddyGroup, UserGroup,
     PersonalEvent, GroupEvent, GroupAttend, TeamEvent, TeamAttend,
     PersonalReport, TeamReport, TeamEvaluation, GroupReport, GroupEvaluation,
@@ -24,11 +25,11 @@ from base.decorators import korean_required, admin_required
 
 from base.queries import get_this_season, get_user
 from matching.queries import get_personal_buddies_by_user, has_matching
-from korean.forms import (
+from .forms import (
     PersonalEventForm, GroupEventForm, TeamEventForm, PersonalReportForm
 )
 
-from korean.queries import *
+from .queries import *
 
 
 @login_required

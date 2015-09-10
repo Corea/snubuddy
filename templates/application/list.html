@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="container">
-    <h1 class="page-header">Application List</h1>
+    <h1 class="page-header">Application List <small><a href="{% url 'application_download' %}">DOWNLOAD (xlsx)</a></h1>
     <table class="table table-condensed table-striped table-center">
         <thead>
             <tr>
@@ -37,7 +37,7 @@
             <td>{% if matching %}O{% endif %}</td>
             <!--<td>{{ matching.major }}</td>-->
             <td>
-                {% if not application.user|is_foreigner %}<a href="/application/accept/{{ application.id }}/" class="btn btn-sm btn-primary">Accept</a>{% endif %}
+                {% if not application.user|is_foreigner %}<a href="{% url 'application_accept' application.id %}" class="btn btn-sm btn-primary">Accept</a>{% endif %}
             </td>
         </tr>
         {% endfor %}
