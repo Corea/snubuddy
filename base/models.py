@@ -72,3 +72,10 @@ class UserSeason(models.Model):
     def __unicode__(self):
         return u'%s - %s %s' % (self.user.profile, self.season,
             dict(self.USER_TYPE_CHOICES)[self.user_type])
+
+class Mailing(models.Model):
+    name = models.CharField(max_length=128, blank=False, null=False)
+    email = models.CharField(max_length=256, blank=False, null=False)
+
+    def __unicode__(self):
+        return u'%s - %s' % (self.name, self.email)

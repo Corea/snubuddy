@@ -4,7 +4,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 
-from base.models import Country, Language, UserProfile
+from base.models import Country, Language, UserProfile, Mailing
 
 
 class RegistrationForm(forms.Form):
@@ -140,3 +140,19 @@ class SettingsForm(forms.Form):
         profile.birth = self.cleaned_data['birth']
         profile.country = self.cleaned_data['country']
         profile.save()
+
+
+class MailingForm(forms.Form):
+    required_css_class = 'required'
+
+    name = forms.CharField(
+        max_length=128,
+        label=_('Full Name'),
+        required=True)
+    email = forms.EmailField(label=_('E-mail'), required=True)
+
+    def save(self):
+        mailing = Mailing.objects.create(
+            name=self.cleaned_data['name'],
+            email=self.cleaned_data['email'])
+        mailing.save()

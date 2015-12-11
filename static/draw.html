@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Lucky Draw</title>
+        <meta charset="utf-8">
+        <style type="text/css">
+* {
+    font-family: Astronaut;
+    line-height: 1em;
+}
+canvas {
+    z-index: -1;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+html, body {
+    padding: 0;
+    margin: 0;
+}
+body {
+    background: black;
+    color: #dddddd;
+}
+#container {
+    width: 90%;
+    margin: 0 auto;
+    padding-top: 10em;
+    text-align: center;
+}
+#machine {
+    text-align: center;
+    font-size: 15em;
+    margin: .3em 0;
+    height: 1em;
+    overflow: hidden;
+    text-align: center;
+}
+#machine.fin {
+    color: #EF479C;
+}
+button {
+    font-family: 'Balls on the rampage';
+    color: #18c8d9;
+/*    border: 8px solid #EF0048; */
+    background-color: transparent;
+/*    background-color: #3C77F9; */
+
+    margin: 0 auto;
+    padding: 0.3em 0.5em;
+    font-size: 15em;
+
+    display: inline-block;
+    font-weight: normal;
+    text-align: center;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    background-image: none;
+    white-space: nowrap;
+    line-height: 1.4;
+    border: 0;
+    outline: 0;
+    border-radius: 0;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+        </style>
+    </head>
+
+    <body>
+        <div id="container">
+            <div id="machine" class="slotMachine">
+                <div class="slot"> &nbsp; </div>
+            </div>
+            <button id="Go">LUCKY DRAW</button>
+        </div>
+
+        <script src="/static/jquery-2.1.4.min.js"></script>
+        <script src="/static/jquery.slotmachine.js"></script>
+        <script src="/static/draw.js"></script>
+        <script type="text/javascript">
+var max_number = 300;
+var now_delay = 5;
+var machine = null;
+
+change = function() {
+    machine.stop();
+    setTimeout(function() {
+        launch();
+        $('#machine').addClass('fin');
+    }, 1350);
+}
+
+$(document).ready(function() {
+    var lst = [];
+    for (var i = 1; i <= max_number; i ++) {
+        lst.push(i);
+    }
+    lst.sort(function() { return 0.5 - Math.random() });
+
+    for (var i = 0; i < max_number; i ++) {
+        $('#machine').append('<div class="slot">' + lst[i] + '</div>');
+    }
+    machine = $('#machine').slotMachine({
+        delay: 450
+    });
+
+    $('#Go').click(function() {
+        machine.shuffle();
+        $('#machine').removeClass('fin');
+        setTimeout(change, 2000);
+    });
+});
+        </script>
+    </body>
+</html>

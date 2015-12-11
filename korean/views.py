@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import copy
 from operator import mul
 from itertools import groupby
 
@@ -21,9 +22,9 @@ from .models import (
     PersonalReport, TeamReport, TeamEvaluation, GroupReport, GroupEvaluation,
     MonthlyScore
 )
-from base.decorators import korean_required, admin_required
+from base.decorators import korean_required, admin_required, group_required
 
-from base.queries import get_this_season, get_user
+from base.queries import get_this_season, get_user, is_admin
 from matching.queries import get_personal_buddies_by_user, has_matching
 from .forms import (
     PersonalEventForm, GroupEventForm, TeamEventForm, PersonalReportForm
@@ -80,8 +81,9 @@ def evaluation_status(request):
         group = get_buddygroup_by_user(request.user)
         group_events = GroupEvent.objects.filter(
             group=group).order_by('start_date')
+    if is_group_leader(request.user) or is_group_subleader(request.user):
         group_reports = GroupReport.objects.filter(
-            group=group, season=get_this_season())
+            user=request.user, season=get_this_season())
         reports += map(lambda x: ('Group', x), group_reports)
 
     reports = sorted(reports, key=lambda (x, y): (y.month, x))
@@ -263,13 +265,15 @@ def add_team_activity(request):
         event.save()
 
         for user in get_korean_list():
-            score = float(request.POST.get('score_' + str(user.id), 0))
-            if score < 1e-8:
-                continue
-
-            attend = TeamAttend.objects.create(
-                event=event, user=user, score=score)
-            attend.save()
+            try:
+                score = float(request.POST.get('score_' + str(user.id), 0))
+                if score < 1e-8:
+                    continue
+                attend = TeamAttend.objects.create(
+                    event=event, user=user, score=score)
+                attend.save()
+            except:
+                pass
 
         return redirect(evaluation_status)
 
@@ -404,8 +408,7 @@ def add_personal_report(request):
 @korean_required
 def view_personal_report(request, report_id):
     report = get_object_or_404(PersonalReport, id=report_id)
-    if report.user != request.user and \
-            not request.user.groups.filter(name='Admin').exists():
+    if report.user != request.user and not is_admin(request.user):
         return redirect(evaluation_status)
 
     return render(request, 'evaluation/view_personal_report.html', {
@@ -466,8 +469,7 @@ def add_group_report(request):
 @korean_required
 def view_group_report(request, id):
     report = get_object_or_404(GroupReport, id=id)
-    if report.user != request.user and \
-            not request.user.groups.filter(name='Admin').exists():
+    if report.user != request.user and not is_admin(request.user):
         return redirect(evaluation_status)
 
     evaluations = GroupEvaluation.objects.filter(
@@ -540,7 +542,7 @@ def view_team_report(request, id):
 @login_required
 @admin_required
 def korean_list(request):
-    users = get_korean_list('birth')
+    users = get_korean_list()#'birth')
     teams = Team.objects.filter(season=get_this_season())
     groups = BuddyGroup.objects.filter(season=get_this_season())
 
@@ -666,8 +668,8 @@ def secret(request, month=None):
 
 
 @login_required
-@admin_required
-# @group_required('Treasurer')
+# @admin_required
+@group_required('Treasurer')
 def check_evaluation(request, odd):
     odd = int(odd) % 2 
     picture = (request.GET.get('picture', None) == 'true')
@@ -698,8 +700,8 @@ def check_evaluation(request, odd):
 
 
 @login_required
-@admin_required
-# @group_required('Treasurer')
+# @admin_required
+@group_required('Treasurer')
 def personal_confirm(request, id):
     personal_event = get_object_or_404(PersonalEvent, id=id)
     personal_event.is_confirm = not personal_event.is_confirm
@@ -709,8 +711,8 @@ def personal_confirm(request, id):
 
 
 @login_required
-@admin_required
-# @group_required('Treasurer')
+# @admin_required
+@group_required('Treasurer')
 def group_confirm(request, id):
     group_event = get_object_or_404(GroupEvent, id=id)
     group_event.is_confirm = not group_event.is_confirm
@@ -723,9 +725,12 @@ def group_confirm(request, id):
 @admin_required
 def calculate_score(request, month):
     personal_base = [0.5, 0.5, 1, 2]
-    personal_limit = [3, 3, 3, 2]
+    personal_count_limit = [6, 6, 3, 1]
     group_base = [0.5, 1, 2, 3, 0.5]
-    group_limit = [3, 3, 6, 6, 0.5]
+    group_count_limit = [6, 3, 3, 2, 1]
+    if month == 2 or month == 8: 
+        personal_count_limit = [0, 0, 0, 0]
+        group_count_limit = [0, 0, 0, 0, 1]
     
     users = get_korean_list()
     for user in users:
@@ -781,15 +786,19 @@ def calculate_score(request, month):
                 event__is_lunch=True))
 
         count_personals = [personal_place_types.count(x) for x in range(4)]
-        count_groups = [group_place_types.count(x) for x in range(5)]
-        
-        personal_score = map(lambda (x, y): x*y,
-                             zip(personal_base, count_personals))
-        personal_score = sum(map(min, zip(personal_limit, personal_score)))
+        tmp = copy.deepcopy(count_personals)
+        tmp[2] += max(tmp[3] - personal_count_limit[3], 0)
+        tmp[1] += max(tmp[2] - personal_count_limit[2], 0)
+        tmp = map(min, zip(tmp, personal_count_limit))
+        personal_score = sum(map(lambda (x, y): x*y, zip(personal_base, tmp)))
 
-        group_score = map(lambda (x, y): x*y,
-                          zip(group_base, count_groups))
-        group_score = sum(map(min, zip(group_limit, group_score)))
+        count_groups = [group_place_types.count(x) for x in range(5)]
+        tmp = copy.deepcopy(count_groups)
+        tmp[2] += max(tmp[3] - group_count_limit[3], 0)
+        tmp[1] += max(tmp[2] - group_count_limit[2], 0)
+        tmp = map(min, zip(tmp, group_count_limit)) 
+        group_score = sum(map(lambda (x, y): x*y, zip(group_base, tmp)))
+
         team_score = sum(map(lambda x: x.score, TeamAttend.objects.filter(
             user=user,
             event__start_date__month=month,

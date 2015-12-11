@@ -12,7 +12,9 @@ from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponse, HttpResponseForbidden
 
 from base import queries
-from base.forms import RegistrationForm, SettingsForm
+from base.models import Mailing
+from base.forms import RegistrationForm, SettingsForm, MailingForm
+from base.decorators import admin_required
 
 
 def index(request):
@@ -99,3 +101,31 @@ def personal_delete(request, personal_id):
         return HttpResponseForbidden()
     activity.delete()
     return redirect(personal_list)
+
+
+def mailing_add(request):
+    if request.method == 'POST':
+        form = MailingForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(mailing_add_finish)
+    else:
+        form = MailingForm()
+
+    return render(request, 'mailing/add.html', {
+        'form': form
+    })
+
+
+def mailing_add_finish(request):
+    return render(request, 'mailing/finish.html', {
+    })
+
+
+@login_required
+@admin_required
+def mailing_list(request):
+    mailings = Mailing.objects.all()
+    return render(request, 'mailing/list.html', {
+        'mailings': mailings
+    })

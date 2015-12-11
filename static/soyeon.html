@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Soyeon's Birthday</title>
+        <meta charset="utf-8">
+        <link href="https://fonts.googleapis.com/css?family=Poiret+One" rel="stylesheet" type="text/css">
+        <style type="text/css">
+* {
+    font-family: 'Poiret One', cursive;
+    line-height: 1em;
+}
+#title {
+
+    font-size: 50px;
+    margin-bottom: 100px;
+}
+canvas {
+    z-index: -1;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+html, body {
+    padding: 0;
+    margin: 0;
+}
+body {
+    background: black;
+    color: #dddddd;
+}
+
+#container {
+    padding-top: 10em;
+    text-align: center;
+}
+
+#countdown {
+    width: 800px;
+    margin: 0 auto;
+}
+#countdown > div {
+    font-size: 40px;
+    float: left;
+    width: 200px;
+}
+#countdown div.content {
+    font-size: 80px;
+}
+        </style>
+    </head>
+
+    <body>
+        <div id="container">
+            <div id="title">
+                COUNTDOWN TO PREZ'S BIRTHDAY
+            </div>
+            <div id="countdown">
+                <div id="day">
+                    <div class="content"></div>
+                    <div class="label">DAYS</div>
+                </div>
+                <div id="hour">
+                    <div class="content"></div>
+                    <div class="label">HOURS</div>
+                </div>
+                <div id="minute">
+                    <div class="content"></div>
+                    <div class="label">MINUTES</div>
+                </div>
+                <div id="second">
+                    <div class="content"></div>
+                    <div class="label">SECONDS</div>
+                </div>
+            </div>
+        </div>
+
+        <script src="/static/jquery-2.1.4.min.js"></script>
+        <script src="/static/draw.js"></script>
+        <script type="text/javascript">
+update = function() {
+    var year = 2010;
+    var birthday = new Date("September 29, " + year);
+    var now = Date.now();
+    while (birthday - now < 0) {
+    var birthday = new Date("September 29, " + year);
+        year ++;
+    }
+    var diff = new Date(birthday - now);
+    day = Math.floor(diff / (24*60*60*1000))
+    diff -= day * 24*60*60*1000;
+
+    hour = Math.floor(diff / (60*60*1000));
+    diff -= hour * 60*60*1000;
+
+    minute = Math.floor(diff / (60*1000));
+    diff -= minute * 60*1000;
+
+    second = Math.floor(diff / 1000);
+    diff -= second * 60;
+
+    $('#day .content').text(day);
+    $('#hour .content').text(hour);
+    $('#minute .content').text(minute);
+    $('#second .content').text(second);
+    setTimeout(update, 1000);
+}
+$(document).ready(function() {
+    update();
+    launch(1);
+});
+        </script>
+    </body>
+</html>

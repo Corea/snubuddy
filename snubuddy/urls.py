@@ -154,4 +154,14 @@ urlpatterns = patterns(
     url(r'^evaluation/ranking/$',
         korean_views.ranking_score,
         name='evaluation_ranking_score'),
+
+    url(r'^mailing/add/$',
+        base_views.mailing_add,
+        name='mailing_add'),
+    url(r'^mailing/finish/$',
+        base_views.mailing_add_finish,
+        name='mailing_add_finish'),
+    url(r'^mailing/list/$',
+        base_views.mailing_list,
+        name='mailing_list'),
 )

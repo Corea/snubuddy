@@ -21,6 +21,14 @@ def is_korean(user):
     return False
 
 
+def is_admin(user):
+    user_season = UserSeason.objects.filter(
+        user=user, season=get_this_season())
+    if user_season.exists():
+        return user_season[0].user_type == UserSeason.ADMIN
+    return False
+    
+
 def get_country(country_id):
     return Country.objects.get(id=country_id)
 
